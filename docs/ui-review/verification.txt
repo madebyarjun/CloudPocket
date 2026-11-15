@@ -1,0 +1,58 @@
+CloudPocket review — 28 October 2026
+
+Environment
+  Workspace: D:/AntiGravity/CloudPocket
+  Isolated Flutter SDK: D:/Temp/cloudpocket-flutter-3.13.9
+  Flutter: 3.13.9
+  Dart: 3.1.5
+  Android: Pixel_5_API_32, emulator-5554, x86_64
+  Build JVM: Android Studio bundled Java 17
+  Existing global Flutter installation was not replaced.
+
+Final checks
+  flutter analyze --no-pub
+    No issues found! (ran in 7.6s)
+
+  flutter test --no-pub --reporter expanded
+    00:17 +190: All tests passed!
+
+  node --check assets/web/room.js
+    Exit code 0.
+
+  Screenshot rendering test
+    test/ui/ui_review_test.dart
+    24 rendered views; completed successfully.
+    Includes a live local WebSocket connection and message-history assertion.
+
+Native observations
+  Debug app launched successfully after adding x86_64 debug engine packaging.
+  Release packaging remains ARM64.
+  Receive upload accepted a synthetic 58-byte file and refreshed the list.
+  Receive /api/files returned items: [].
+  Throttled synthetic 64 MiB upload paused at 40.9 MB across two observations.
+  Cancel terminated the client connection (ECONNRESET).
+  Storage listing confirmed the incomplete file was removed.
+  Temporary emulator test files were removed; sharing was stopped.
+  Scanner opened the emulator camera preview.
+  Native Cloudflare setup screenshot confirms its suffix buttons no longer overflow.
+
+Scope
+  No flutter build apk command was run.
+  flutter run --debug necessarily compiled and installed a debug APK.
+  No release APK or production signing key was created.
+  Release signing now requires android/key.properties rather than using the debug key.
+  Public discovery registrations are verified with a mocked HTTP client, not a live ntfy publication.
+  Browser access to the local portal was denied by the origin permission gate.
+  That denied browser action was not worked around.
+  Guarded native room/chat/media screens were not captured by bypassing FLAG_SECURE.
+  Their screenshots use synthetic Flutter-rendered fixtures.
+  Native media codecs/PDF, physical QR decoding, OEM background survival and live
+  custom-domain provisioning remain unverified.
+
+Files
+  index.html: offline screenshot gallery and element reference.
+  REPORT.md: text version of the 29-view, 152-element walkthrough.
+  catalogue.json: machine-readable view/element inventory.
+  screenshots/: native and fixture images, including intermediate observations.
+  capture-android.ps1: capture helper for emulator-5554.
+  build-guide.py: regenerates the static guide from its documented catalogue.

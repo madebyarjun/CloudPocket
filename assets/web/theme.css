@@ -1,0 +1,50 @@
+/* Shared with CloudPocket's native light/dark design tokens. No remote fonts. */
+:root {
+  color-scheme: light;
+  --bg:#f2f2f7; --card:#fff; --label:#000; --label2:#6c6c70;
+  --sep:rgba(60,60,67,.18); --fill:rgba(120,120,128,.12); --thumb:#fff;
+  --blue:#007aff; --green:#248a3d; --red:#d70015; --orange:#c76b00;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 10px 30px rgba(0,0,0,.06);
+  --glass:rgba(250,250,252,.86); --surface-high:#e5e5ea;
+  --font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --apple-curve:cubic-bezier(.32,.72,0,1);
+}
+@media(prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme:dark; --bg:#000; --card:#1c1c1e; --label:#fff; --label2:#aaaab1;
+    --sep:rgba(84,84,88,.65); --fill:rgba(120,120,128,.24); --thumb:#636366;
+    --blue:#0a84ff; --green:#30d158; --red:#ff453a; --orange:#ff9f0a;
+    --shadow:0 10px 30px rgba(0,0,0,.24); --glass:rgba(28,28,30,.88); --surface-high:#2c2c2e;
+  }
+}
+html[data-theme="dark"] {
+  color-scheme:dark; --bg:#000; --card:#1c1c1e; --label:#fff; --label2:#aaaab1;
+  --sep:rgba(84,84,88,.65); --fill:rgba(120,120,128,.24); --thumb:#636366;
+  --blue:#0a84ff; --green:#30d158; --red:#ff453a; --orange:#ff9f0a;
+  --shadow:0 10px 30px rgba(0,0,0,.24); --glass:rgba(28,28,30,.88); --surface-high:#2c2c2e;
+}
+:root {
+  --bg-color:var(--bg); --surface-color:var(--card); --card-color:var(--card); --card-border:var(--sep);
+  --primary:var(--blue); --primary-light:var(--blue); --primary-hover:var(--blue);
+  --text-primary:var(--label); --text-secondary:var(--label2); --text-muted:var(--label2); --text-mute:var(--label2);
+  --accent-cyan:var(--blue); --accent-emerald:var(--green); --accent-amber:var(--orange); --accent-rose:var(--red); --accent-red:var(--red);
+  --border-subtle:var(--sep); --border-focus:var(--blue);
+  --surface-low:var(--card); --surface-container:var(--card); --surface-highest:var(--surface-high);
+  --md-sys-color-primary:var(--blue); --md-sys-color-on-primary:#fff;
+  --md-sys-color-primary-container:var(--fill); --md-sys-color-on-primary-container:var(--blue);
+  --cp-color-danger:var(--red); --cp-color-success:var(--green);
+  --shadow-md:var(--shadow); --radius-card:24px;
+}
+* {box-sizing:border-box}
+body {margin:0; background:var(--bg); color:var(--label); font-family:var(--font-family); -webkit-font-smoothing:antialiased}
+button,input,textarea,select {font:inherit}
+button,a,input,textarea {touch-action:manipulation}
+button,a { -webkit-tap-highlight-color:transparent }
+button {cursor:pointer}
+button:disabled {cursor:not-allowed; opacity:.5}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible,input:focus-visible,textarea:focus-visible {outline:3px solid var(--blue); outline-offset:4px}
+a {color:var(--blue)}
+svg {flex-shrink:0}
+.hidden,[hidden] {display:none!important}
+.sr-only {position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(prefers-reduced-motion:reduce) {*,*::before,*::after {animation:none!important;transition:none!important;scroll-behavior:auto!important}}
