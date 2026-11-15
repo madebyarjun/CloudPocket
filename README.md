@@ -97,7 +97,6 @@ docs/             Architecture, security, testing, and release guidance
 - [Release readiness](docs/RELEASE.md)
 - [UI and functionality guide](docs/UI_UX_AND_FUNCTIONALITY_GUIDE.md)
 - [UI review](docs/ui-review/REPORT.md)
-- [Engineering rules](AGENTS.md)
 
 Keep contributions limited to the requested feature or fix, preserve streaming file I/O, and keep chat state ephemeral. Run the relevant checks and report device-dependent behavior as unverified until tested.
 
