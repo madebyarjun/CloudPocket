@@ -12,26 +12,26 @@ CloudPocket transforms an Android device into a dual-purpose server:
 
 ```mermaid
 graph TD
-    subgraph Client Tier
+    subgraph group4["Client Tier"]
         BrowserUser["Web Client (Desktop/Mobile Browser)\n• File Portal (/)\n• Disposable Room Portal (/room)"]
         NativeGuest["Native App Guest\n• RoomChatScreen (FLAG_SECURE)\n• QrScannerSheet\n• RoomDiscoveryService"]
     end
 
-    subgraph Network & Ingress Tier
+    subgraph group5["Network & Ingress Tier"]
         LocalLAN["Local Wi-Fi / Hotspot (0.0.0.0:8080)"]
         CF["Cloudflare Quick Tunnel\n(trycloudflare.com / HTTPS + WSS)"]
         LT["LocalTunnel Relay\n(loca.lt / HTTPS + WSS)"]
         Bore["Bore Relay\n(bore.pub / Plaintext TCP)"]
     end
 
-    subgraph Host Device (CloudPocket Android App)
-        subgraph Native Platform Layer
+    subgraph group6["Host Device (CloudPocket Android App)"]
+        subgraph group7["Native Platform Layer"]
             KotlinAct["MainActivity.kt (MethodChannels)\n• wifi_lock (Wifi/Wake/Multicast Locks)\n• security (FLAG_SECURE Window Management)\n• sharing_intent (Android Share Sheet / Deep Links)"]
             FGS["Foreground Service\n(flutter_foreground_task / dataSync Notification)"]
             NativeBin["Native Binaries\nlibcloudflared.so (arm64-v8a)"]
         end
 
-        subgraph Embedded Server Layer (Shelf)
+        subgraph group8["Embedded Server Layer (Shelf)"]
             ShelfEngine["ServerEngine (Port 8080)\nShelf Pipeline + Router + TrafficTracker"]
             AuthMid["AuthMiddleware\nCookie Validation & Google Sign-In"]
             FileH["FileHandler\nStreaming Byte Ranges & Directory Browsing"]
@@ -43,7 +43,7 @@ graph TD
             DispR["DisposableRoom\nCountdown Timer, Sandbox Cache, Cleanup"]
         end
 
-        subgraph Remote Tunneling Layer
+        subgraph group9["Remote Tunneling Layer"]
             TunMgr["TunnelManager & TunnelHealthMonitor"]
             SmartEng["SmartTunnelEngine (Latency Prober)"]
             MicroDNS["MicroDnsServer (127.0.0.1 UDP Proxy)"]
@@ -52,7 +52,7 @@ graph TD
             BoreClient["BoreClient (Dart JSON TCP Socket)"]
         end
 
-        subgraph State Management Layer (Riverpod)
+        subgraph group10["State Management Layer (Riverpod)"]
             ServerProv["serverProvider (ServerState)"]
             SessProv["sessionProvider (ShareSession)"]
             RoomProv["roomProvider (DisposableRoom State)"]
@@ -62,7 +62,7 @@ graph TD
             SetProv["settingsProvider (Preferences)"]
         end
 
-        subgraph Storage Tier
+        subgraph group11["Storage Tier"]
             PublicStore["Android Public Storage\n/storage/emulated/0/Download/CloudPocket"]
             EphemeralCache["Sandboxed Room Cache\ncache/disposable_room_<id>/"]
             ThumbCache["Thumbnail Cache\ncache/thumbnails/"]

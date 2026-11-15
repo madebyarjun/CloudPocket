@@ -10,7 +10,7 @@ CloudPocket operates across multiple execution environments and network segments
 
 ```mermaid
 graph TD
-    subgraph Host Device Sandbox (Android)
+    subgraph group1["Host Device Sandbox (Android)"]
         HostOS["Android Host OS (Linux Kernel)"]
         CPProcess["CloudPocket App Process (Dart VM)"]
         ShelfServ["Embedded Shelf Server (0.0.0.0:8080)"]
@@ -18,14 +18,14 @@ graph TD
         DiskStore["Storage & Cache (Downloads & App Cache)"]
     end
 
-    subgraph Tunnel Infrastructure (Third-Party)
+    subgraph group2["Tunnel Infrastructure (Third-Party)"]
         CFTunnel["Cloudflare Edge (trycloudflare.com)\nTLS 1.3 Terminated at Cloudflare"]
         LTTunnel["LocalTunnel Relay (loca.lt)\nTLS Terminated at loca.lt"]
         BoreRelay["Bore Relay (bore.pub)\nPlaintext TCP Relay (No TLS)"]
         Ntfy["ntfy.sh Public Discovery Topic\n(Client checks 10-minute registration expiry)"]
     end
 
-    subgraph Client Environments
+    subgraph group3["Client Environments"]
         NativeApp["Native CloudPocket Client\nFLAG_SECURE Window"]
         WebClient["Web Browser Client\nDOM & WebCrypto API"]
     end
