@@ -2,7 +2,7 @@
 
 Share files directly from your Android phone over Wi-Fi, a hotspot, or an optional public tunnel. Recipients open a link in their browser; temporary rooms add chat and media sharing.
 
-**Version:** 1.5.0+1 · **Primary platform:** Android 8.0+ · **Status:** Release candidate
+**Version:** 1.0.0+1 · **Primary platform:** Android 8.0+ · **Status:** Release candidate
 
 Device testing and release gates remain outstanding. See [release readiness](docs/RELEASE.md) before distributing a production package.
 
