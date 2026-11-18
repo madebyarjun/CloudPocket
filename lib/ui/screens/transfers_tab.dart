@@ -72,7 +72,7 @@ class _TransfersTabState extends ConsumerState<TransfersTab> {
                       fontFamilyFallback: CloudPocketTheme.fontFallbacks,
                     ),
                   ),
-                  Container(
+                  if (aggregateSpeedMb != "0.0") Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
                       color: colors.card,
@@ -111,7 +111,7 @@ class _TransfersTabState extends ConsumerState<TransfersTab> {
               child: filteredTransfers.isEmpty
                   ? Center(
                       child: Text(
-                        'No active transfers',
+                        _selectedFilterIndex == 1 ? 'No downloads' : _selectedFilterIndex == 2 ? 'No uploads' : 'No transfers',
                         style: TextStyle(
                           fontSize: 15,
                           color: colors.label2,

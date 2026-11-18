@@ -1070,8 +1070,8 @@ async function loadFiles(subpath) {
     currentItems = data.items || [];
     document.getElementById('pageTitle').textContent = data.isReceiveMode ? 'Receive files' : 'Shared files';
     document.getElementById('pageDescription').textContent = data.isReceiveMode
-      ? 'Send files straight to this device. Select files or drop them below.'
-      : `${currentItems.length} ${currentItems.length === 1 ? 'item' : 'items'} available · Download directly from the host device.`;
+      ? 'Choose files or drop them here.'
+      : `${currentItems.length} ${currentItems.length === 1 ? 'item' : 'items'} available.`;
     allowUploads = data.allowUploads;
     if (data.folderName) currentFolderName = data.folderName;
     if (data.isSingleFolderShare !== undefined) isSingleFolderShare = data.isSingleFolderShare;

@@ -175,14 +175,21 @@
     const token = getInviteToken();
     let appUrl = `cloudpocket://room?url=${encodeURIComponent(currentUrl)}`;
     if (token) appUrl += `&token=${encodeURIComponent(token)}`;
-    if (pin) appUrl += `#pin=${encodeURIComponent(pin)}`;
+    if (pin) appUrl += `&pin=${encodeURIComponent(pin)}`;
     if (nick) appUrl += `&nick=${encodeURIComponent(nick)}`;
 
     window.location.href = appUrl;
 
     setTimeout(() => {
       if (!document.hidden) {
-        window.open('https://github.com/madebyarjun', '_blank');
+        const link = document.createElement('a');
+        link.href = 'https://github.com/madebyarjun/CloudPocket/releases/latest';
+        link.textContent = 'Get CloudPocket for Android';
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.className = 'sec-app-btn';
+        const button = document.getElementById(document.getElementById('joinAppBtn')?.offsetParent ? 'joinAppBtn' : 'openAppBtn');
+        if (button && !button.parentElement.querySelector('a[href="' + link.href + '"]')) button.after(link);
       }
     }, 1500);
   }
@@ -631,7 +638,9 @@
     info.appendChild(title);
     info.appendChild(size);
 
-    const appOnlyBadge = document.createElement('span');
+    const appOnlyBadge = document.createElement('button');
+    appOnlyBadge.type = 'button';
+    appOnlyBadge.addEventListener('click', openInNativeApp);
     appOnlyBadge.className = 'msg-tier-badge secure';
     appOnlyBadge.textContent = 'View in app chat';
 

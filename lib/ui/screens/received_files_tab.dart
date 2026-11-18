@@ -155,20 +155,11 @@ class _ReceivedFilesTabState extends ConsumerState<ReceivedFilesTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '$formattedUsed in received files',
+                        '${allFiles.length} ${allFiles.length == 1 ? 'file' : 'files'} · $formattedUsed',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: colors.label,
-                          fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '${allFiles.length} ${allFiles.length == 1 ? 'file' : 'files'} in your receive folder',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colors.label2,
                           fontFamilyFallback: CloudPocketTheme.fontFallbacks,
                         ),
                       ),

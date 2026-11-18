@@ -1,3 +1,4 @@
+import 'foreground_room_tap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -38,6 +39,7 @@ class _RoomTapButtonState extends State<RoomTapButton> {
                     ? 'Join with NFC'
                     : 'Invite with NFC'),
                 onPressed: () async {
+                  manualRoomTap.value = true;
                   final value = await showModalBottomSheet<String>(
                       context: context,
                       builder: (_) => _RoomTapSheet(invite: widget.invite));
@@ -93,7 +95,9 @@ class _RoomTapSheetState extends State<_RoomTapSheet>
 
   @override
   void dispose() {
-    _nfc.invokeMethod<void>('stop');
+    _nfc
+        .invokeMethod<void>('stop')
+        .whenComplete(() => manualRoomTap.value = false);
     pulse.dispose();
     super.dispose();
   }

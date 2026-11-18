@@ -67,7 +67,7 @@ class OnboardingScreen extends ConsumerWidget {
 
               // Tagline
               Text(
-                'Share freely.\nNo limits. Just a tunnel.',
+                'Share files and temporary rooms from your phone.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -78,25 +78,6 @@ class OnboardingScreen extends ConsumerWidget {
               ),
 
               const SizedBox(height: 48),
-
-              // Three Feature Badges
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _FeaturePill(
-                    icon: Icons.send_rounded,
-                    label: 'Direct Sharing',
-                  ),
-                  _FeaturePill(
-                    icon: Icons.shield_outlined,
-                    label: 'Secure Tunnels',
-                  ),
-                  _FeaturePill(
-                    icon: Icons.phonelink_lock_rounded,
-                    label: 'Your Device\nYour Control',
-                  ),
-                ],
-              ),
 
               const Spacer(flex: 3),
 
@@ -129,55 +110,11 @@ class OnboardingScreen extends ConsumerWidget {
 
               const SizedBox(height: 16),
 
-              Text(
-                'Files travel better together.',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colorScheme.outline,
-                ),
-              ),
               const SizedBox(height: 8),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _FeaturePill extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _FeaturePill({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    
-    return Column(
-      children: [
-        Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceVariant,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: colorScheme.primary, size: 24),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12,
-            color: colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
-            height: 1.2,
-          ),
-        ),
-      ],
     );
   }
 }

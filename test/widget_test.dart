@@ -33,8 +33,8 @@ void main() {
     expect(find.textContaining('share'), findsWidgets);
     expect(find.text('Send Files'), findsOneWidget);
     expect(find.text('Receive Mode'), findsOneWidget);
-    expect(find.text('Select Files / Folder'), findsOneWidget);
-    expect(find.text('Internet tunnel'), findsOneWidget);
+    expect(find.text('Choose files'), findsOneWidget);
+    expect(find.text('Sharing options'), findsOneWidget);
 
     // Verify curved bottom navigation bar items
     expect(find.byType(AppleFloatingTabBar), findsOneWidget);
@@ -92,7 +92,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     // Initially in Send Files mode
-    expect(find.text('Select Files / Folder'), findsOneWidget);
+    expect(find.text('Choose files'), findsOneWidget);
     expect(find.text('Ready to Receive Files'), findsNothing);
 
     // Tap Receive Mode on the SegmentedButton
@@ -102,7 +102,7 @@ void main() {
     // Frontend should now display Receive Mode card and Start Receiving button
     expect(find.text('Ready to Receive Files'), findsOneWidget);
     expect(find.text('Start Receiving'), findsOneWidget);
-    expect(find.text('Select Files / Folder'), findsNothing);
+    expect(find.text('Choose files'), findsNothing);
   });
 
   testWidgets('Tapping Settings tab 6 times opens the secret System Logs viewer', (WidgetTester tester) async {
@@ -143,9 +143,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Background protection'), findsOneWidget);
+    await tester.ensureVisible(find.text('Background sharing'));
+    await tester.tap(find.text('Background sharing'));
+    await tester.pumpAndSettle();
     expect(find.text('Keep running'), findsOneWidget);
-    expect(find.text('Fix all issues'), findsOneWidget);
+    expect(find.text('Fix all issues'), findsNothing);
     expect(find.text('Device'), findsOneWidget);
     expect(find.text('Appearance'), findsOneWidget);
   });
@@ -168,7 +170,7 @@ void main() {
     expect(find.text('Online'), findsOneWidget);
     expect(find.text('Wi‑Fi'), findsOneWidget);
     expect(find.text('Copy'), findsOneWidget);
-    expect(find.text('Share'), findsOneWidget);
+    expect(find.text('Share link'), findsOneWidget);
     expect(find.text('Open'), findsOneWidget);
     expect(find.text('Stop Sharing'), findsOneWidget);
   });
@@ -189,7 +191,7 @@ void main() {
 
     expect(find.text('Disposable'), findsOneWidget);
     expect(find.text('Room'), findsOneWidget);
-    expect(find.text('Invite link & QR'), findsOneWidget);
+    expect(find.text('Waiting for share address…'), findsOneWidget);
     expect(find.text('Open Chat'), findsOneWidget);
     expect(find.text('End and Erase Room'), findsOneWidget);
   });

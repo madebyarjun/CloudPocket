@@ -49,6 +49,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
   String _roomCode = '';
   String? _activePin;
   String? _activeToken;
+  bool _admitted = false;
   String? _myParticipantId;
   String? _attachmentKey;
   int? _participantCount;
@@ -88,13 +89,15 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
 
   Future<void> _enableSecureMode() async {
     try {
-      await _securityChannel.invokeMethod('enableSecureMode');
+      await _securityChannel.invokeMethod(
+          'enableSecureMode', identityHashCode(this).toString());
     } catch (_) {}
   }
 
   Future<void> _disableSecureMode() async {
     try {
-      await _securityChannel.invokeMethod('disableSecureMode');
+      await _securityChannel.invokeMethod(
+          'disableSecureMode', identityHashCode(this).toString());
     } catch (_) {}
   }
 
@@ -161,6 +164,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
 
   void _scheduleReconnect() {
     if (_isDisposed || _isBurned) return;
+    if (mounted && _admitted) setState(() => _admitted = false);
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(const Duration(seconds: 3), () {
       if (!_isDisposed && !_isBurned) {
@@ -186,6 +190,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         _initE2e();
         setState(() {
           _attachmentKey = json['attachmentKey'] as String?;
+          _admitted = true;
           _myParticipantId = json['participantId'] as String?;
           _roomName = json['roomName'] as String? ?? _roomName;
           _roomCode = json['roomCode'] as String? ?? '';
@@ -226,6 +231,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         break;
 
       case 'room_destroyed':
+        final chatRoute = ModalRoute.of(context);
+        if (chatRoute != null) Navigator.of(context).popUntil((route) => route == chatRoute || route.isFirst);
         setState(() {
           _isBurned = true;
           _burnReason = json['reason'] as String? ?? 'Room burned';
@@ -358,7 +365,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
 
   void _sendMessage() {
     final text = _textController.text.trim();
-    if (text.isEmpty || _channel == null) return;
+    if (!_admitted || text.isEmpty || _channel == null) return;
 
     if (_e2eService != null) {
       final enc = _e2eService!.encrypt(text);
@@ -515,41 +522,22 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                     children: [
                       BackButton(color: colors.blue),
                       Expanded(
-                          child: Wrap(
-                              spacing: 8,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                            Icon(Icons.access_time_rounded,
-                                color: colors.orange, size: 20),
-                            Text('Room ends in',
-                                style: TextStyle(
-                                    color: colors.label2, fontSize: 12)),
-                            Text(timeStr,
-                                style: TextStyle(
-                                    color: colors.red,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.bold,
-                                    fontFeatures: const [
-                                      FontFeature.tabularFigures()
-                                    ])),
-                            if (_e2eService != null)
-                              Chip(
-                                  avatar: Icon(Icons.lock_outline,
-                                      size: 13, color: colors.label2),
-                                  label: const Text('Encrypted payloads',
-                                      style: TextStyle(fontSize: 11)),
-                                  backgroundColor: colors.fill),
-                            if (_participantCount != null)
-                              Chip(
-                                  label: Text('$_participantCount online'),
-                                  backgroundColor: colors.fill),
-                            if (_roomCode.isNotEmpty)
-                              Chip(
-                                  label: Text(_roomCode,
-                                      style: TextStyle(
-                                          color: colors.blue, fontSize: 12)),
-                                  backgroundColor: colors.fill),
-                          ])),
+                          child: Text(_roomName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: colors.label,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold))),
+                      Icon(Icons.access_time, size: 15, color: colors.orange),
+                      const SizedBox(width: 6),
+                      Text(timeStr,
+                          style: TextStyle(
+                              color: colors.red,
+                              fontSize: 18,
+                              fontFeatures: const [
+                                FontFeature.tabularFigures()
+                              ])),
                     ],
                   ),
                 ),
@@ -560,13 +548,18 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
               color: colors.fill,
-              child: Row(children: [
-                Icon(Icons.shield_outlined, size: 15, color: colors.orange),
-                const SizedBox(width: 8),
-                Expanded(
-                    child: Text(
-                        'Room admission credentials are shared with the host and transport relay.',
-                        style: TextStyle(fontSize: 11, color: colors.label2))),
+              child:
+                  Wrap(alignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, spacing: 12, children: [
+                if (_participantCount != null) Text('$_participantCount online'),
+                TextButton(onPressed: () => showModalBottomSheet<void>(context: context, builder: (_) => SafeArea(
+                  child: Padding(padding: const EdgeInsets.all(20), child: Column(mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(_roomName, style: Theme.of(context).textTheme.titleLarge),
+                      if (_roomCode.isNotEmpty) ListTile(title: const Text('Room code'), trailing: Text(_roomCode)),
+                      if (_e2eService != null) const ListTile(leading: Icon(Icons.lock_outline), title: Text('Encrypted payloads')),
+                      const Text('The host holds the room credentials. When a relay is used, it can access them too.'),
+                    ])))),
+                  child: const Text('Room details')),
               ]),
             ),
             // Chat Message Feed (.chat)
@@ -581,39 +574,12 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                     itemCount: _messages.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) {
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 28),
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                              color: colors.card,
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: colors.shadow),
-                          child: Column(children: [
-                            Container(
-                                width: 56,
-                                height: 56,
-                                decoration: BoxDecoration(
-                                    color: colors.blue,
-                                    borderRadius: BorderRadius.circular(18)),
-                                child: const Icon(Icons.lock_outline,
-                                    color: Colors.white)),
-                            const SizedBox(height: 16),
-                            Text(_roomName,
+                        return const Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Text(
+                                'Room files and messages expire when the room closes.',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: colors.label,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 9),
-                            Text(
-                                "Messages stay in the host's memory. Shared media uses temporary device storage. The room closes when its timer expires or the host ends it.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: colors.label2,
-                                    fontSize: 13,
-                                    height: 1.7)),
-                          ]),
-                        );
+                                style: TextStyle(fontSize: 12)));
                       }
                       final msg = _messages[index - 1];
                       final isMe = msg.senderId == _myParticipantId;
@@ -625,6 +591,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                           child: Center(
                             child: Text(
                               msg.text ?? '',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: colors.label2,
@@ -639,25 +606,40 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                       // Media Attachment Bubble (.b.med)
                       if (msg.type == ChatMessageType.file) {
                         return Align(
-                          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                          alignment: isMe
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
                           child: Container(
                             constraints: const BoxConstraints(maxWidth: 280),
                             margin: const EdgeInsets.symmetric(vertical: 5),
                             padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(color: colors.card, borderRadius: BorderRadius.circular(18)),
+                            decoration: BoxDecoration(
+                                color: colors.card,
+                                borderRadius: BorderRadius.circular(18)),
                             child: RoomMediaBubble(
                               message: msg,
-                              remoteUrl: msg.fileDownloadPath == null ? null : '$_baseHttpUrl${msg.fileDownloadPath}',
+                              remoteUrl: msg.fileDownloadPath == null
+                                  ? null
+                                  : '$_baseHttpUrl${msg.fileDownloadPath}',
                               headers: {
-                                if (_attachmentKey != null) 'X-Room-View-Key': _attachmentKey!,
-                                if (_activePin?.isNotEmpty == true) 'X-Room-Pin': _activePin!,
-                                if (_activeToken?.isNotEmpty == true) 'X-Room-Token': _activeToken!,
+                                if (_attachmentKey != null)
+                                  'X-Room-View-Key': _attachmentKey!,
+                                if (_activePin?.isNotEmpty == true)
+                                  'X-Room-Pin': _activePin!,
+                                if (_activeToken?.isNotEmpty == true)
+                                  'X-Room-Token': _activeToken!,
                               },
-                              onViewerClosed: () { if (mounted) _enableSecureMode(); },
+                              onViewerClosed: () {
+                                if (mounted) _enableSecureMode();
+                              },
                             ),
                           ),
                         );
                       }
+                      final previous = index > 1 ? _messages[index - 2] : null;
+                      final showAuthor = previous == null || previous.type != ChatMessageType.text ||
+                          previous.senderId != msg.senderId || previous.isE2e != msg.isE2e ||
+                          msg.timestamp.difference(previous.timestamp).inMinutes.abs() >= 2;
                       // Text Message Bubble (.b.out / .b.in)
                       return Align(
                         alignment:
@@ -667,7 +649,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                                 ? CrossAxisAlignment.end
                                 : CrossAxisAlignment.start,
                             children: [
-                              Padding(
+                              if (showAuthor) Padding(
                                   padding: const EdgeInsets.only(top: 12),
                                   child: Wrap(
                                       spacing: 5,
@@ -763,7 +745,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                 children: [
                   // Attachment button
                   GestureDetector(
-                    onTap: _isUploadingMedia ? null : _pickAndUploadMedia,
+                    onTap: !_admitted || _isUploadingMedia ? null : _pickAndUploadMedia,
                     child: Container(
                       width: 36,
                       height: 36,
@@ -802,7 +784,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                           fontFamilyFallback: CloudPocketTheme.fontFallbacks,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Message',
+                          hintText: _admitted ? 'Message' : _myParticipantId == null ? 'Connecting to room…' : 'Reconnecting…',
                           hintStyle: TextStyle(
                             color: colors.label2,
                             fontSize: 15,
@@ -819,7 +801,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                   const SizedBox(width: 8),
                   // Send button (.send: 38x38 circle, blue, white arrow)
                   GestureDetector(
-                    onTap: _sendMessage,
+                    onTap: _admitted ? _sendMessage : null,
                     child: Container(
                       width: 46,
                       height: 46,

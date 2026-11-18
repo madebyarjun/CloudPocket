@@ -345,24 +345,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     );
   }
 
-  int _getReachIndex(ShareSession session) {
-    if (!session.enableTunnel) return 0;
-    if (session.tunnelConfig.provider == TunnelProvider.auto) return 2;
-    return session.tunnelConfig.provider == TunnelProvider.cloudflareQuick ? 1 : -1;
-  }
-
-  void _onReachChanged(int index) {
-    if (index == 0) {
-      ref.read(sessionProvider.notifier).setEnableTunnel(false);
-    } else if (index == 1) {
-      ref.read(sessionProvider.notifier).setEnableTunnel(true);
-      ref.read(sessionProvider.notifier).setTunnelProvider(TunnelProvider.cloudflareQuick);
-    } else {
-      ref.read(sessionProvider.notifier).setEnableTunnel(true);
-      ref.read(sessionProvider.notifier).setTunnelProvider(TunnelProvider.auto);
-    }
-  }
-
   String _getReachLabel(ShareSession session) {
     if (!session.enableTunnel) return 'Local network';
     if (session.tunnelConfig.provider == TunnelProvider.auto) return 'Auto';
@@ -504,7 +486,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               _buildHeroCard(context, colors, itemsCount),
 
               // Background optimization warning (if active)
-              if (!_isBatteryOptimizationIgnored && !_dismissedBatteryBanner) ...[
+              if (itemsCount > 0 && !_isBatteryOptimizationIgnored && !_dismissedBatteryBanner) ...[
                 const SizedBox(height: 14),
                 AppleGroup(
                   children: [
@@ -523,20 +505,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 ),
               ],
 
-              // Privacy Caption (.cap)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 6),
-                child: Text(
-                  'Privacy',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colors.label2,
-                    fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                  ),
-                ),
-              ),
-
-              // Privacy Group (.grp)
+              ExpansionTile(title: const Text("Sharing options"), subtitle: Text(_getReachLabel(session)), children: [
               AppleGroup(
                 children: [
                   // Row 1: PIN protection
@@ -546,7 +515,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                       icon: Icon(Icons.lock_rounded, color: Colors.white, size: 16),
                     ),
                     title: 'PIN protection',
-                    subtitle: session.requirePassword ? 'PIN enabled' : null,
+
                     trailing: AppleToggle(
                       label: 'PIN protection',
                       value: session.requirePassword,
@@ -560,8 +529,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                     showSeparator: false,
                     onTap: _showSecurityDialog,
                   ),
-                  // Row 2: One-time downloads (Vault limit)
-                  AppleRow(
+                  if (_activeMode == 0) AppleRow(
                     icon: const AppleIconTile(
                       backgroundColor: Color(0xFFAF52DE),
                       icon: Icon(Icons.bolt_rounded, color: Colors.white, size: 18),
@@ -603,19 +571,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 ],
               ),
 
-              // Segmented reach control (.seg #tun)
-              AppleSegmentedControl<int>(
-                margin: const EdgeInsets.only(top: 14),
-                values: const [0, 1, 2],
-                labels: const ['Local', 'Cloudflare', 'Auto'],
-                selectedValue: _getReachIndex(session),
-                onValueChanged: _onReachChanged,
-              ),
-
+              ]),
               const SizedBox(height: 24),
 
-              // Primary Action Trigger (.btn)
-              AppleButton.primary(
+              // Primary session action
+              if (_activeMode != 0 || itemsCount > 0) AppleButton.primary(
                 text: _activeMode == 1
                     ? 'Start Receiving'
                     : (_activeMode == 2 ? 'Create Room' : 'Start Sharing'),
@@ -646,25 +606,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                   }
                 },
               ),
-              const SizedBox(height: 10),
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.qr_code_2_rounded, size: 15, color: colors.label2),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Generates instant QR code & link sharing',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: colors.label2,
-                        fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
               if (serverState.errorMessage != null) ...[
                 const SizedBox(height: 12),
                 Center(
@@ -715,7 +656,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
             const SizedBox(height: 6),
             Text(
-              'Anyone on your Wi‑Fi can upload straight to this phone.',
+              'Receive files from a shared link.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
@@ -725,7 +666,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
             const SizedBox(height: 14),
             Text(
-              'Files are saved to your configured receive folder',
+              ref.watch(settingsProvider).customUploadDirectory ?? 'Downloads/CloudPocket',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -777,7 +718,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
             const SizedBox(height: 6),
             Text(
-              'A temporary space for chat and media. The host closes it when time runs out.',
+              'Choose when the room expires.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
@@ -828,7 +769,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
           ),
           const SizedBox(height: 6),
           Text(
-            'Share photos, videos, documents or whole folders with any browser. Nothing to install.',
+            'Choose files or folders to share.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 15,
@@ -837,8 +778,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
           ),
           const SizedBox(height: 16),
-          AppleButton.gray(
-            text: itemsCount > 0 ? '$itemsCount files ready · Edit' : 'Select Files / Folder',
+          AppleButton.primary(
+            text: itemsCount > 0 ? '$itemsCount files ready · Edit' : 'Choose files',
             isSmall: true,
             onPressed: () {
               Navigator.of(context).push(

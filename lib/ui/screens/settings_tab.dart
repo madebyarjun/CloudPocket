@@ -93,50 +93,6 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
     }
   }
 
-  Future<void> _fixAllIssues() async {
-    // 1. POST_NOTIFICATIONS
-    if (!_notificationsAllowed) {
-      await PermissionService.requestNotificationPermission();
-    }
-
-    // 2. ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-    final batIgnored = await PermissionService.isBatteryOptimizationIgnored();
-    if (!batIgnored) {
-      await PermissionService.requestIgnoreBatteryOptimization();
-    }
-
-    // 3. Only if the device is still restricted, prompt with one-line explanation and open OEM deep link
-    final stillRestricted = !await PermissionService.isBatteryOptimizationIgnored();
-    if (stillRestricted || !_watchdogActive) {
-      final explanation = await PermissionService.getOemExplanation();
-      if (mounted) {
-        final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
-        final shouldOpen = await AppleDialog.show<bool>(
-          context: context,
-          title: const Text('Background Protection'),
-          content: Text(explanation),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Cancel', style: TextStyle(color: colors.label2)),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Open Settings', style: TextStyle(color: colors.blue, fontWeight: FontWeight.bold)),
-            ),
-          ],
-        );
-
-        if (shouldOpen == true) {
-          await PermissionService.openOemDeepLink();
-        }
-      }
-    }
-
-    await PermissionService.setWatchdogActive(true);
-    await _checkStatuses();
-  }
-
   void _editDeviceName(BuildContext context, String currentName) {
     final controller = TextEditingController(text: currentName);
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
@@ -330,7 +286,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
               ),
 
               // Caption: Background protection (.cap)
-              _buildCaption('Background protection', colors),
+              ExpansionTile(title: const Text('Background sharing'), children: [
               AppleGroup(
                 margin: EdgeInsets.zero,
                 children: [
@@ -376,7 +332,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
                       backgroundColor: _notificationsAllowed ? colors.green : colors.orange,
                       icon: Icon(_notificationsAllowed ? Icons.check_circle_rounded : Icons.warning_amber_rounded, color: Colors.white, size: 18),
                     ),
-                    title: 'Notifications allowed',
+                    title: _notificationsAllowed ? 'Notifications enabled' : 'Allow notifications',
                     subtitle: _notificationsAllowed ? 'Notification channel granted' : 'Notifications blocked',
                     trailing: _buildStatusTrailing(_notificationsAllowed, colors),
                     onTap: () async {
@@ -399,17 +355,10 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: AppleButton.primary(
-                  text: 'Fix all issues',
-                  icon: const Icon(Icons.shield_rounded, size: 18, color: Colors.white),
-                  onPressed: _fixAllIssues,
-                ),
-              ),
+              ]),
 
               // Caption: Diagnostics (.cap)
-              _buildCaption('Diagnostics & Advanced', colors),
+              ExpansionTile(title: const Text('Advanced'), children: [
               AppleGroup(
                 margin: EdgeInsets.zero,
                 children: [
@@ -420,7 +369,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
                       icon: const Icon(Icons.terminal_rounded, color: Colors.white, size: 18),
                     ),
                     title: 'System Logs',
-                    subtitle: 'Tap to view live in-memory server logs',
+
                     trailing: Text('›', style: TextStyle(fontSize: 22, color: colors.label2, fontWeight: FontWeight.w300)),
                     onTap: () => LogViewerDialog.show(context),
                   ),
@@ -436,6 +385,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
                   ),
                 ],
               ),
+              ]),
             ],
           ),
         ),

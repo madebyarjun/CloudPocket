@@ -336,7 +336,10 @@ class AppleToggle extends StatelessWidget {
 }
 
 /// Apple style button (.btn) with scale down to 0.97
+enum ButtonStyleRole { primary, secondary, destructive }
+
 class AppleButton extends StatefulWidget {
+  final ButtonStyleRole role;
   final String text;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
@@ -347,6 +350,7 @@ class AppleButton extends StatefulWidget {
 
   const AppleButton({
     super.key,
+    this.role = ButtonStyleRole.primary,
     required this.text,
     this.onPressed,
     this.backgroundColor,
@@ -384,6 +388,7 @@ class AppleButton extends StatefulWidget {
       text: text,
       onPressed: onPressed,
       textColor: textColor,
+      role: ButtonStyleRole.secondary,
       isSmall: isSmall,
       isFullWidth: isFullWidth,
       icon: icon,
@@ -397,6 +402,7 @@ class AppleButton extends StatefulWidget {
     bool isFullWidth = true,
   }) {
     return AppleButton(
+      role: ButtonStyleRole.destructive,
       text: text,
       onPressed: onPressed,
       isSmall: isSmall,
@@ -414,8 +420,8 @@ class _AppleButtonState extends State<AppleButton> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
-    final bg = widget.backgroundColor ?? colors.blue;
-    final fg = widget.textColor ?? Colors.white;
+    final bg = widget.backgroundColor ?? (widget.role == ButtonStyleRole.secondary ? colors.fill : widget.role == ButtonStyleRole.destructive ? colors.red : colors.blue);
+    final fg = widget.textColor ?? (widget.role == ButtonStyleRole.secondary ? colors.blue : Colors.white);
 
     Widget button = AnimatedScale(
       scale: _isPressed && widget.onPressed != null ? 0.97 : 1.0,

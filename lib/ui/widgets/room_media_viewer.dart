@@ -352,7 +352,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
 
   Future<void> _enableSecureScreen() async {
     try {
-      await _securityChannel.invokeMethod('enableSecureMode');
+      await _securityChannel.invokeMethod('enableSecureMode', identityHashCode(this).toString());
     } catch (_) {}
   }
 
@@ -364,7 +364,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
         widget.category == RoomMediaCategory.video) {
       _mediaChannel.invokeMethod('mediaRelease').catchError((_) {});
     }
-    _securityChannel.invokeMethod('disableSecureMode').catchError((_) {});
+    _securityChannel.invokeMethod('disableSecureMode', identityHashCode(this).toString()).catchError((_) {});
     final temp = _ephemeralTempFile;
     if (temp != null) {
       Future.microtask(() async {
@@ -689,7 +689,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
                 Icon(Icons.shield_rounded, size: 11, color: cpColors.success),
                 const SizedBox(width: 4),
                 Text(
-                  'IN-APP VIEWER • NO EXPORT CONTROLS',
+                  'View only',
                   style: TextStyle(
                     color: cpColors.success,
                     fontSize: 9,
@@ -725,7 +725,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
                     CircularProgressIndicator(color: colorScheme.primary),
                     const SizedBox(height: 14),
                     const Text(
-                      'Opening in secure view-only mode...',
+                      'Opening attachment…',
                       style: TextStyle(color: Colors.white70, fontSize: 13),
                     ),
                   ],

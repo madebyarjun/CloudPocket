@@ -520,10 +520,11 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                           ),
                         ),
 
+                        ExpansionTile(title: const Text('Connection details'), children: [
                         if (allIps.length > 1) ...[
                           const SizedBox(height: 12),
                           Text(
-                            'Alternative IPs (Tap to switch):',
+                            'Available addresses',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -596,6 +597,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                         ),
                         const SizedBox(height: 16),
 
+                        ]),
                         // Actions row (Copy, Share, Open)
                         Row(
                           children: [
@@ -614,8 +616,8 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                             ),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: AppleButton.gray(
-                                text: 'Share',
+                              child: AppleButton.primary(
+                                text: 'Share link',
                                 isSmall: true,
                                 onPressed: currentUrl.isNotEmpty
                                     ? () {

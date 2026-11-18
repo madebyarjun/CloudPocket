@@ -18,6 +18,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 class MainActivity: FlutterActivity() {
+    private val secureOwners = mutableSetOf<String>()
     private val roomTap by lazy { RoomTap(this) }
     override fun onPause() { roomTap.stop(); super.onPause() }
 
@@ -521,6 +522,7 @@ class MainActivity: FlutterActivity() {
                 "enableSecureMode" -> {
                     activity.runOnUiThread {
                         try {
+                            secureOwners.add(call.arguments as? String ?: "room")
                             window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
                             result.success(true)
                         } catch (e: Exception) {
@@ -531,7 +533,8 @@ class MainActivity: FlutterActivity() {
                 "disableSecureMode" -> {
                     activity.runOnUiThread {
                         try {
-                            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+                            secureOwners.remove(call.arguments as? String ?: "room")
+                            if (secureOwners.isEmpty()) window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
                             result.success(true)
                         } catch (e: Exception) {
                             result.error("ERROR", "Failed to disable secure mode: ${e.message}", null)

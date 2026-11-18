@@ -42,13 +42,13 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
 
   Future<void> _enableSecureMode() async {
     try {
-      await _securityChannel.invokeMethod('enableSecureMode');
+      await _securityChannel.invokeMethod('enableSecureMode', identityHashCode(this).toString());
     } catch (_) {}
   }
 
   Future<void> _disableSecureMode() async {
     try {
-      await _securityChannel.invokeMethod('disableSecureMode');
+      await _securityChannel.invokeMethod('disableSecureMode', identityHashCode(this).toString());
     } catch (_) {}
   }
 
@@ -396,26 +396,6 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
                       AppleToast.show(context, 'PIN copied (auto-clears in 60s)');
                     },
                   ),
-                  AppleRow(
-                    title: 'Invite link & QR',
-                    subtitle: inviteReady ? 'Tap to view QR or share link' : inviteStatus,
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.qr_code_2_rounded, size: 20, color: colors.blue),
-                        const SizedBox(width: 6),
-                        Icon(Icons.share_rounded, size: 16, color: colors.blue),
-                      ],
-                    ),
-                    onTap: !inviteReady ? null : () => _showRoomQrSheet(
-                      context: context,
-                      inviteUrl: inviteUrl,
-                      inPersonQrUrl: inPersonQrUrl,
-                      roomCode: roomCode,
-                      roomPin: roomPin,
-                      rawPin: rawPin,
-                    ),
-                  ),
                 ],
               ),
 
@@ -474,7 +454,7 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
 
               // Share Invite Link & QR button
               AppleButton.gray(
-                text: inviteReady ? 'Share Invite & QR Code' : inviteStatus,
+                text: inviteReady ? 'Invite' : inviteStatus,
                 icon: const Icon(Icons.qr_code_2_rounded, size: 18),
                 onPressed: !inviteReady ? null : () => _showRoomQrSheet(
                   context: context,

@@ -21,7 +21,7 @@ class HistoryTab extends ConsumerWidget {
         elevation: 0,
         foregroundColor: colors.label,
         title: Text(
-          'Transfer History',
+          'Session history',
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w600,

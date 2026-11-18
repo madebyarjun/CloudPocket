@@ -65,21 +65,6 @@ class _FileSelectorScreenState extends ConsumerState<FileSelectorScreen> {
             fontFamilyFallback: CloudPocketTheme.fontFallbacks,
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'Done',
-              style: TextStyle(
-                color: colors.blue,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: Column(
         children: [
@@ -221,7 +206,7 @@ class _FileSelectorScreenState extends ConsumerState<FileSelectorScreen> {
                   SizedBox(
                     width: 140,
                     child: AppleButton.primary(
-                      text: 'Confirm',
+                      text: items.isEmpty ? 'Choose items' : 'Use ${items.length} ${items.length == 1 ? 'item' : 'items'}',
                       onPressed: items.isEmpty
                           ? null
                           : () {

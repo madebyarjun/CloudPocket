@@ -1,3 +1,4 @@
+import 'ui/widgets/foreground_room_tap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,7 @@ class CloudPocketApp extends ConsumerWidget {
       theme: CloudPocketTheme.buildLightTheme(primaryColor),
       darkTheme: CloudPocketTheme.buildDarkTheme(primaryColor),
       home: const WithForegroundTask(
-        child: AppShell(),
+        child: ForegroundRoomTap(child: AppShell()),
       ),
     );
   }

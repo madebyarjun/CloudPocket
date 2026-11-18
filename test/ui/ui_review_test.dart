@@ -158,9 +158,15 @@ void main() {
     expect(container.read(sessionProvider).expiryDuration, ExpiryDuration.hour1);
     await tester.tap(find.text('Send Files'));
     await tester.pump();
+    await tester.ensureVisible(find.text("Sharing options"));
+    await tester.tap(find.text("Sharing options"));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.ensureVisible(find.byType(AppleToggle).at(1));
     await tester.tap(find.byType(AppleToggle).at(1));
     await tester.pump();
     expect(container.read(sessionProvider).maxDownloadsPerFile, 1);
+    await tester.ensureVisible(find.text('Room'));
     await tester.tap(find.text('Room'));
     await tester.pump();
     await tester.tap(find.text('Received'));
@@ -184,6 +190,10 @@ void main() {
     await capture(tester, '12-room-join');
     await tester.tap(find.text('Host Room'));
     await tester.pump();
+    await tester.tap(find.text('Room options'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.ensureVisible(find.text('Self-Destruct Timer'));
     await tester.tap(find.text('Self-Destruct Timer'));
     await capture(tester, '13-room-timer');
     await mount(tester, const Scaffold(body: SharingLiveView()), server: const ServerState(

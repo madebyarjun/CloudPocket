@@ -553,6 +553,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                       trailing: Text('›', style: TextStyle(fontSize: 22, color: colors.label2, fontWeight: FontWeight.w300)),
                       onTap: () => _showTunnelModeDialog(context),
                     ),
+                    ExpansionTile(title: const Text('Room options'), subtitle: Text('${session.expiryDuration.label} · ${session.requirePassword ? "PIN required" : "Invite access"}'), children: [
                     // Self-Destruct Timer
                     AppleRow(
                       icon: AppleIconTile(
@@ -560,7 +561,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                         icon: const Icon(Icons.timer_rounded, color: Colors.white, size: 18),
                       ),
                       title: 'Self-Destruct Timer',
-                      subtitle: '${session.expiryDuration.label} · Strict countdown',
+                      subtitle: session.expiryDuration.label,
                       trailing: Text('›', style: TextStyle(fontSize: 22, color: colors.label2, fontWeight: FontWeight.w300)),
                       onTap: () => _showDurationDialog(context),
                     ),
@@ -575,6 +576,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                       trailing: Text('›', style: TextStyle(fontSize: 22, color: colors.label2, fontWeight: FontWeight.w300)),
                       onTap: () => _showSecurityDialog(context),
                     ),
+                    ]),
                   ],
                 ),
 
@@ -684,7 +686,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Scan Host QR Code',
+                        'Scan QR code',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -694,7 +696,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        'Instant zero-typing join with screenshot guard',
+                        'Use the code on the host’s phone',
                         style: TextStyle(
                           fontSize: 13,
                           color: colors.label2,
@@ -750,7 +752,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                 style: TextStyle(color: colors.label, fontSize: 15, fontFamilyFallback: CloudPocketTheme.fontFallbacks),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  labelText: 'Chat ID or Room Link',
+                  labelText: 'Room link or code',
                   labelStyle: TextStyle(color: colors.label2, fontSize: 13),
                   hintText: 'e.g. AB-4829 or https://...',
                   hintStyle: TextStyle(color: colors.label2.withOpacity(0.5), fontSize: 15),
@@ -762,8 +764,10 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                 ),
               ),
             ),
-            // Room PIN
-            Container(
+            // Code discovery requires a PIN. Direct invites prompt after admission.
+            ValueListenableBuilder<TextEditingValue>(valueListenable: _joinUrlController, builder: (context, value, _) {
+              if (value.text.trim().isEmpty || value.text.contains('://')) return const SizedBox.shrink();
+              return Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: TextField(
                 controller: _joinPinController,
@@ -781,7 +785,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                   ),
                 ),
               ),
-            ),
+            ); }),
             // Nickname
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -804,7 +808,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
 
         // Join Room Action Button (.btn)
         AppleButton.primary(
-          text: _isResolvingChatId ? 'Finding Room...' : 'Join Room (Secure Mode)',
+          text: _isResolvingChatId ? 'Finding Room...' : 'Join room',
           onPressed: _isResolvingChatId ? null : _joinRoom,
         ),
       ],

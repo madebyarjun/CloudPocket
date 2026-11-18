@@ -16,6 +16,12 @@ class RoomTap(private val activity: Activity) {
 
     fun handle(method: String, invite: String?, result: MethodChannel.Result) {
         val nfc = adapter
+        if (method == "enabled") { result.success(nfc?.isEnabled == true); return }
+        if (method == "settings") {
+            try { activity.startActivity(android.content.Intent(android.provider.Settings.ACTION_NFC_SETTINGS)); result.success(null) }
+            catch (_: android.content.ActivityNotFoundException) { result.error("unavailable", "Open NFC in system settings.", null) }
+            return
+        }
         if (method == "stop") { stop(); result.success(null); return }
         val host = method == "host" || method == "canHost"
         val supported = nfc != null && (!host || activity.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC_HOST_CARD_EMULATION))

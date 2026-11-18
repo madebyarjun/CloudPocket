@@ -136,6 +136,9 @@ void main() {
 
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text("Connection details"));
+      await tester.tap(find.text("Connection details"));
+      await tester.pumpAndSettle();
       // Verify the local link is displayed
       expect(find.text('http://192.168.225.1:8080'), findsWidgets);
 
@@ -180,14 +183,18 @@ void main() {
 
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text("Connection details"));
+      await tester.tap(find.text("Connection details"));
+      await tester.pumpAndSettle();
       // Verify alternative IP header is shown
-      expect(find.text('Alternative IPs (Tap to switch):'), findsOneWidget);
+      expect(find.text('Available addresses'), findsOneWidget);
 
       // Verify both chips are present
       expect(find.text('192.168.225.1:8080'), findsOneWidget);
       expect(find.text('192.168.1.42:8080'), findsOneWidget);
 
       // Tap the second IP chip
+      await tester.ensureVisible(find.text('192.168.1.42:8080'));
       await tester.tap(find.text('192.168.1.42:8080'));
       await tester.pumpAndSettle();
 
