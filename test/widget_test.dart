@@ -1,3 +1,5 @@
+import 'package:cloud_pocket/providers/session_provider.dart';
+import 'package:cloud_pocket/models/share_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -195,6 +197,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          sessionProvider.overrideWith(_LocalSession.new),
           serverProvider.overrideWith(() => _MockEmptyServerNotifier()),
         ],
         child: const MaterialApp(
@@ -235,6 +238,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          sessionProvider.overrideWith(_LocalSession.new),
           serverProvider.overrideWith(() => _MockMultiInterfaceServerNotifier()),
         ],
         child: const MaterialApp(
@@ -308,4 +312,9 @@ class _MockMultiInterfaceServerNotifier extends ServerNotifier {
       ],
     );
   }
+}
+
+class _LocalSession extends SessionNotifier {
+  @override
+  ShareSession build() => const ShareSession(enableTunnel: false);
 }

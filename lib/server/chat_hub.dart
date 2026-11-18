@@ -14,6 +14,7 @@ class RoomParticipant {
   final String color;
   final DateTime joinedAt;
   final String? clientId;
+  final String? attachmentKey;
   final List<DateTime> messageTimestamps = [];
 
   RoomParticipant({
@@ -24,6 +25,7 @@ class RoomParticipant {
     required this.color,
     required this.joinedAt,
     this.clientId,
+    this.attachmentKey,
   });
 
   Map<String, dynamic> toJson() => {
@@ -73,6 +75,9 @@ class ChatHub {
     this.onNewMessage,
     this.getRemainingSeconds,
   });
+
+  bool mayViewAttachment(String? key) => key != null &&
+      _participants.values.any((participant) => participant.attachmentKey == key);
 
   int get participantCount => _participants.length;
   int get secureParticipantCount =>
@@ -238,6 +243,7 @@ class ChatHub {
       color: participant.color,
       joinedAt: participant.joinedAt,
       clientId: participant.clientId,
+      attachmentKey: clientType == 'app' ? _uuid.v4() : null,
     );
     _pendingParticipants.remove(channel);
     _joinTimers.remove(channel)?.cancel();
@@ -247,6 +253,7 @@ class ChatHub {
     channel.sink.add(jsonEncode({
       'type': 'welcome',
       'participantId': updated.id,
+      if (updated.attachmentKey != null) 'attachmentKey': updated.attachmentKey,
       'nickname': updated.nickname,
       'roomName': config.roomName,
       'roomCode': config.roomCode,
@@ -483,6 +490,7 @@ class ChatHub {
       secureParticipants: secureParticipantCount,
       browserParticipants: browserParticipantCount,
     );
+    broadcastHeartbeat(remainingSeconds: getRemainingSeconds?.call() ?? 0);
   }
 
   void clearAndCloseAll() {

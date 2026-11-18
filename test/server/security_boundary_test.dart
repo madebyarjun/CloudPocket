@@ -33,7 +33,7 @@ void main() {
     expect(files.statusCode, 401);
   });
 
-  test('Token-only room protects media and accepts authenticated room cookie', () async {
+  test('Token-only room requires an active viewer key beyond normal room admission', () async {
     final engine = await start(const ShareSession(
       isDisposableRoom: true,
       roomConfig: RoomConfig(inviteToken: 'test-invite'),
@@ -44,8 +44,35 @@ void main() {
     final login = await http.post(Uri.parse('$base/api/room/auth'), body: jsonEncode({'token': 'test-invite'}));
     expect(login.statusCode, 200);
     final cookie = login.headers['set-cookie']!.split(';').first;
-    expect((await http.get(Uri.parse('$base/api/room/files/sample.txt'), headers: {'cookie': cookie})).statusCode, 200);
-    expect((await http.get(Uri.parse('$base/api/room/files/sample.txt'), headers: {'x-room-token': 'test-invite'})).statusCode, 200);
+    expect((await http.get(Uri.parse('$base/api/room/files/sample.txt'), headers: {'cookie': cookie})).statusCode, 403);
+    expect((await http.get(Uri.parse('$base/api/room/files/sample.txt'), headers: {'x-room-token': 'test-invite'})).statusCode, 403);
+  });
+
+  test('Room preview reads a short file with a 512 KiB range', () async {
+    final engine = await start(const ShareSession(
+      isDisposableRoom: true, roomConfig: RoomConfig(inviteToken: 'preview'),
+    ));
+    final file = File('${engine.disposableRoom!.tempDirectory.path}/note.txt');
+    await file.writeAsString('hello');
+    final uri = Uri.parse('http://127.0.0.1:${engine.port}/api/room/files/note.txt');
+    final socket = await WebSocket.connect('ws://127.0.0.1:${engine.port}/api/room/ws');
+    addTearDown(socket.close);
+    final welcome = socket.asBroadcastStream().map((data) => jsonDecode(data as String))
+        .firstWhere((event) => event['type'] == 'welcome');
+    socket.add(jsonEncode({'type': 'join', 'token': 'preview', 'client': 'app'}));
+    final key = (await welcome)['attachmentKey'] as String;
+    final headers = {'x-room-token': 'preview', 'x-room-view-key': key, 'range': 'bytes=0-524287'};
+    final response = await http.get(uri, headers: headers);
+    expect(response.statusCode, 206);
+    expect(response.headers['content-range'], 'bytes 0-4/5');
+    expect(response.body, 'hello');
+    headers['range'] = 'bytes=5-';
+    expect((await http.get(uri, headers: headers)).statusCode, 416);
+    await socket.close();
+    for (var i = 0; i < 100 && engine.disposableRoom!.chatHub.participantCount > 0; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+    expect((await http.get(uri, headers: headers)).statusCode, 403);
   });
 
   test('Pending and rejected sockets cannot receive broadcasts or inject messages', () async {

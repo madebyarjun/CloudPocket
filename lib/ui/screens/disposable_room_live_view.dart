@@ -1,3 +1,4 @@
+import 'package:cloud_pocket/ui/widgets/room_tap_button.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -205,6 +206,7 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
                 );
               },
             ),
+            RoomTapButton(invite: inPersonQrUrl),
             if (rawPin != null && rawPin.isNotEmpty) ...[
               const SizedBox(height: 10),
               CpButton(
@@ -269,14 +271,16 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
     final peerCount = roomState.participantCount;
     final peopleCount = peerCount + 1; // including host
 
-    final currentUrl = serverState.tunnelUrl ?? serverState.localUrl ?? 'http://127.0.0.1:8080/room';
-    final baseUrl = serverState.tunnelUrl ?? serverState.localUrl ?? 'http://127.0.0.1:8080';
-    final inviteUrl = CloudPocketLinkBuilder.buildUrl(
+    final currentUrl = serverState.localUrl ?? 'http://127.0.0.1:8080';
+    final baseUrl = session.enableTunnel ? serverState.tunnelUrl : serverState.localUrl;
+    final inviteReady = baseUrl != null && baseUrl.isNotEmpty;
+    final inviteStatus = serverState.tunnelError ?? 'Waiting for share address…';
+    final inviteUrl = !inviteReady ? '' : CloudPocketLinkBuilder.buildUrl(
       interfaceAddress: baseUrl,
       mode: SharingLinkMode.roomInvite,
       session: session,
     );
-    final inPersonQrUrl = CloudPocketLinkBuilder.buildUrl(
+    final inPersonQrUrl = !inviteReady ? '' : CloudPocketLinkBuilder.buildUrl(
       interfaceAddress: baseUrl,
       mode: SharingLinkMode.roomQr,
       session: session,
@@ -394,7 +398,7 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
                   ),
                   AppleRow(
                     title: 'Invite link & QR',
-                    subtitle: 'Tap to view QR or share link',
+                    subtitle: inviteReady ? 'Tap to view QR or share link' : inviteStatus,
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -403,7 +407,7 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
                         Icon(Icons.share_rounded, size: 16, color: colors.blue),
                       ],
                     ),
-                    onTap: () => _showRoomQrSheet(
+                    onTap: !inviteReady ? null : () => _showRoomQrSheet(
                       context: context,
                       inviteUrl: inviteUrl,
                       inPersonQrUrl: inPersonQrUrl,
@@ -470,9 +474,9 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
 
               // Share Invite Link & QR button
               AppleButton.gray(
-                text: 'Share Invite & QR Code',
+                text: inviteReady ? 'Share Invite & QR Code' : inviteStatus,
                 icon: const Icon(Icons.qr_code_2_rounded, size: 18),
-                onPressed: () => _showRoomQrSheet(
+                onPressed: !inviteReady ? null : () => _showRoomQrSheet(
                   context: context,
                   inviteUrl: inviteUrl,
                   inPersonQrUrl: inPersonQrUrl,

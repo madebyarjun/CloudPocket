@@ -18,6 +18,9 @@ import java.io.File
 import java.io.FileOutputStream
 
 class MainActivity: FlutterActivity() {
+    private val roomTap by lazy { RoomTap(this) }
+    override fun onPause() { roomTap.stop(); super.onPause() }
+
     companion object {
         private var wifiLock: WifiManager.WifiLock? = null
         private var wifiLowLatencyLock: WifiManager.WifiLock? = null
@@ -35,6 +38,9 @@ class MainActivity: FlutterActivity() {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "cloudpocket/room_tap").setMethodCallHandler { call, result ->
+            roomTap.handle(call.method, call.arguments as? String, result)
+        }
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {

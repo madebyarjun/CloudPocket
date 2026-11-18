@@ -83,9 +83,12 @@ class RoomMediaBubble extends StatelessWidget {
   final String? remoteUrl;
   final Map<String, String>? headers;
 
+  final VoidCallback? onViewerClosed;
+
   const RoomMediaBubble({
     super.key,
     required this.message,
+    this.onViewerClosed,
     this.localFilePath,
     this.remoteUrl,
     this.headers,
@@ -128,15 +131,15 @@ class RoomMediaBubble extends StatelessWidget {
         break;
       case RoomMediaCategory.text:
         icon = Icons.description_rounded;
-        actionLabel = 'Read Text';
+        actionLabel = filename.toLowerCase().endsWith('.md') ? 'Read Markdown' : 'Read Text';
         accentColor = cpColors.warning;
         break;
     }
 
     return InkWell(
       borderRadius: BorderRadius.circular(10),
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: !hasLocal && remoteUrl == null ? null : () async {
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => RoomMediaViewerScreen(
               filename: filename,
@@ -148,6 +151,7 @@ class RoomMediaBubble extends StatelessWidget {
             ),
           ),
         );
+        onViewerClosed?.call();
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,7 +439,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
     final tempFile = File(
       '${Directory.systemTemp.path}${Platform.pathSeparator}cp_view_${DateTime.now().millisecondsSinceEpoch}$ext',
     );
-    _ephemeralTempFile = tempFile;
+
 
     final client = http.Client();
     try {
@@ -453,7 +457,12 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
       } finally {
         await sink.close();
       }
+      if (!mounted) throw StateError("Viewer closed");
+      _ephemeralTempFile = tempFile;
       return tempFile;
+    } catch (_) {
+      if (await tempFile.exists()) await tempFile.delete();
+      rethrow;
     } finally {
       client.close();
     }
@@ -482,7 +491,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
           throw Exception('Failed to load text (HTTP ${res.statusCode})');
         }
         await for (final chunk in res.stream) {
-          bytes.addAll(chunk);
+          bytes.addAll(chunk.take(maxTextBytes - bytes.length));
           if (bytes.length >= maxTextBytes) break;
         }
       } finally {

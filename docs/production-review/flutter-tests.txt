@@ -1,3 +1,0 @@
-00:30 +199: D:/AntiGravity/CloudPocket/test/ui/ui_review_test.dart: Capture redesigned pages and inspect navigation                                                                                    
-00:30 +199: D:/AntiGravity/CloudPocket/test/ui/ui_review_test.dart: (tearDownAll)                                                                                                                      
-00:30 +199: All tests passed!                                                                                                                                                                          

@@ -1,3 +1,4 @@
+import 'package:cloud_pocket/ui/widgets/room_tap_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -709,7 +710,17 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
           ),
         ),
 
-        const SizedBox(height: 22),
+        RoomTapButton(onInvite: (value) {
+          final uri = Uri.tryParse(value);
+          if (uri == null || !{'http', 'https'}.contains(uri.scheme) || uri.host.isEmpty || uri.path != '/room') {
+            AppleToast.show(context, 'Invalid room invite. Try the QR code.');
+            return;
+          }
+          _joinPinController.clear();
+          _detectedToken = null;
+          _joinUrlController.text = value;
+          _joinRoom();
+        }),        const SizedBox(height: 22),
 
         // Manual Input Section Caption (.cap)
         Padding(

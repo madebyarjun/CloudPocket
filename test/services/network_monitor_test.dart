@@ -1,3 +1,5 @@
+import 'package:cloud_pocket/providers/session_provider.dart';
+import 'package:cloud_pocket/models/share_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -114,7 +116,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            serverProvider.overrideWith(() => _MockServerNotifier(
+            sessionProvider.overrideWith(_LocalSession.new),
+          serverProvider.overrideWith(() => _MockServerNotifier(
                   const ServerState(
                     status: ServerStatus.running,
                     localUrl: 'http://192.168.225.1:8080',
@@ -163,7 +166,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            serverProvider.overrideWith(() => mockNotifier),
+            sessionProvider.overrideWith(_LocalSession.new),
+          serverProvider.overrideWith(() => mockNotifier),
           ],
           child: MaterialApp(
             theme: CloudPocketTheme.darkTheme,
@@ -204,4 +208,9 @@ class _MockServerNotifier extends ServerNotifier {
   void setLocalUrl(String url) {
     state = state.copyWith(localUrl: url);
   }
+}
+
+class _LocalSession extends SessionNotifier {
+  @override
+  ShareSession build() => const ShareSession(enableTunnel: false);
 }

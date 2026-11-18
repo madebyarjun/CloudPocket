@@ -438,7 +438,7 @@ class _AppleButtonState extends State<AppleButton> {
               widget.icon!,
               const SizedBox(width: 8),
             ],
-            Text(
+            Flexible(child: Text(
               widget.text,
               style: TextStyle(
                 fontSize: widget.isSmall ? 15 : 17,
@@ -448,7 +448,7 @@ class _AppleButtonState extends State<AppleButton> {
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-            ),
+            )),
           ],
         ),
       ),

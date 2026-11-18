@@ -2,7 +2,7 @@
 
 Share files directly from your Android phone over Wi-Fi, a hotspot, or an optional public tunnel. Recipients open a link in their browser; temporary rooms add chat and media sharing.
 
-**Version:** 1.0.0+1 · **Primary platform:** Android 8.0+ · **Status:** Release candidate
+**Version:** 1.0.1+2 · **Primary platform:** Android 8.0+ · **Status:** Release candidate
 
 Device testing and release gates remain outstanding. See [release readiness](docs/RELEASE.md) before distributing a production package.
 
@@ -11,7 +11,7 @@ Device testing and release gates remain outstanding. See [release readiness](doc
 - **Send files:** Share selected files and folders through the embedded web portal, with byte-range downloads and streaming ZIP archives.
 - **Receive files:** Let browser users upload files to your phone through a dedicated drop zone with streaming uploads.
 - **Local or internet sharing:** Use Wi-Fi/hotspot locally, or enable Cloudflare, LocalTunnel, Bore, or a custom Bore relay. Auto mode probes available providers and supports failover.
-- **Disposable rooms:** Host temporary chat rooms with PIN protection, invite links, QR codes, and media viewing. Messages and participant state remain in RAM; media uses a temporary app-cache sandbox.
+- **Disposable rooms:** Host temporary chat rooms with PIN protection, invite links, QR codes, NFC tap-to-join on compatible phones, and in-app attachment viewing. Messages and participant state remain in RAM; media uses a temporary app-cache sandbox.
 - **Transfer controls:** Track uploads and downloads, view session history, and configure download limits with Vault mode.
 - **Android integration:** Background foreground service, network interface selection, camera QR scanning, and guarded room media viewing.
 
@@ -36,7 +36,7 @@ This branch uses:
 | Android SDK | Compile/target 34; minimum 26 |
 | Java | 17 for Android tooling |
 | Node.js | 18+ for browser unit tests |
-| Android release architecture | ARM64 (`arm64-v8a`) |
+| Android release architecture | ARM64 (`arm64-v8a`) and ARMv7 (`armeabi-v7a`) |
 
 From the project root:
 
@@ -45,7 +45,13 @@ flutter pub get
 flutter run
 ```
 
-Use a physical ARM64 Android device to exercise the bundled Cloudflare executable. An x86_64 debug emulator can exercise local sharing but cannot run that ARM64 binary; use LocalTunnel or Bore when testing other tunnel paths.
+Build the signed APKs with your release keystore in `android/key.properties`:
+
+```powershell
+flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64
+```
+
+Use a physical device of each architecture to exercise its bundled Cloudflare executable. An x86_64 debug emulator can exercise local sharing but cannot run that ARM64 binary; use LocalTunnel or Bore when testing other tunnel paths.
 
 Platform scaffold directories are included for other Flutter targets; their presence does not establish feature parity or release support.
 

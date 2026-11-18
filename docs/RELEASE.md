@@ -2,6 +2,11 @@
 
 Updated 2026-10-28. This is an engineering checklist, not a claim of production certification.
 
+## 1.0.1 Android packages
+
+The Android release build supports separate armeabi-v7a and arm64-v8a packages. Configure the existing private release key in android/key.properties, then run the split build command in the README. Verify each APK with apksigner before uploading.
+
+The bundled 32-bit tunnel executable comes from the upstream [cloudflared 2026.8.3 release](https://github.com/cloudflare/cloudflared/releases/tag/2026.8.3), asset cloudflared-linux-arm, SHA-256 7a7cac4ad4561ff55797eaf27aae1a0be37498c85502715bc87e3bad919d928c. Physical-device tunnel and NFC checks are outstanding.
 ## Current verification
 
 - Flutter 3.13.9 / Dart 3.1.5: analyzer reports no issues.

@@ -50,3 +50,23 @@ android/key.properties
 *.jks
 *.keystore
 
+
+# Machine-local signing inputs and generated release artifacts
+*.aab
+*.apks
+*.idsig
+*.p12
+*.pfx
+.env
+.env.local
+/android/app/build/
+/coverage/
+
+# Superseded root design exports and generated verification transcripts
+/design_ref*.html
+/design_ref_.md
+/design_ref_.png
+/CloudPocket – Apple-style UI.html
+/docs/production-review/analyze.txt
+/docs/production-review/flutter-tests.txt
+/docs/production-review/web-tests.txt

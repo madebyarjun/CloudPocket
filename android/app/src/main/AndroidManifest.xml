@@ -38,6 +38,8 @@
         <package android:name="com.samsung.android.sm" />
     </queries>
 
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
     <application
         android:label="CloudPocket"
         android:name="${applicationName}"
@@ -67,6 +69,10 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".RoomTapService" android:exported="true" android:permission="android.permission.BIND_NFC_SERVICE">
+            <intent-filter><action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" /></intent-filter>
+            <meta-data android:name="android.nfc.cardemulation.host_apdu_service" android:resource="@xml/room_tap" />
+        </service>
         <activity
             android:name=".MainActivity"
             android:exported="true"

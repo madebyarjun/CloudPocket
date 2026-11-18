@@ -610,38 +610,6 @@
     const card = document.createElement('div');
     card.className = 'file-card';
 
-    const ext = (msg.filename || '').split('.').pop().toLowerCase();
-    const isImg = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext);
-    const isVideo = ['mp4', 'webm', 'mov'].includes(ext);
-    const isAudio = ['mp3', 'wav', 'ogg', 'aac', 'm4a'].includes(ext);
-
-    if (isImg && msg.fileDownloadPath) {
-      const img = document.createElement('img');
-      img.src = msg.fileDownloadPath;
-      img.className = 'file-preview-media';
-      img.alt = msg.filename || 'Photo';
-      img.loading = 'lazy';
-      img.draggable = false;
-      img.oncontextmenu = (e) => e.preventDefault();
-      card.appendChild(img);
-    } else if (isVideo && msg.fileDownloadPath) {
-      const video = document.createElement('video');
-      video.src = msg.fileDownloadPath;
-      video.controls = true;
-      video.controlsList = 'nodownload';
-      video.className = 'file-preview-media';
-      video.oncontextmenu = (e) => e.preventDefault();
-      card.appendChild(video);
-    } else if (isAudio && msg.fileDownloadPath) {
-      const audio = document.createElement('audio');
-      audio.src = msg.fileDownloadPath;
-      audio.controls = true;
-      audio.controlsList = 'nodownload';
-      audio.style.width = '100%';
-      audio.style.marginBottom = '8px';
-      card.appendChild(audio);
-    }
-
     const headerRow = document.createElement('div');
     headerRow.className = 'file-header-row';
 
@@ -665,7 +633,7 @@
 
     const appOnlyBadge = document.createElement('span');
     appOnlyBadge.className = 'msg-tier-badge secure';
-    appOnlyBadge.textContent = 'View-Only';
+    appOnlyBadge.textContent = 'View in app chat';
 
     headerRow.appendChild(iconBox);
     headerRow.appendChild(info);

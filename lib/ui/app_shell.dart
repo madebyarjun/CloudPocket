@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
-import 'package:cloud_pocket/providers/server_provider.dart';
-import 'package:cloud_pocket/providers/session_provider.dart';
 import 'package:cloud_pocket/providers/settings_provider.dart';
 import 'package:cloud_pocket/ui/screens/history_tab.dart';
 import 'package:cloud_pocket/ui/screens/home_screen.dart';
@@ -114,10 +112,6 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
     final currentIndex = ref.watch(activeTabProvider);
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
 
-    final serverState = ref.watch(serverProvider);
-    final session = ref.watch(sessionProvider);
-    final isDisposableRoomActive = serverState.isRunning && session.isDisposableRoom;
-
     if (settings.isFirstLaunch) {
       return OnboardingScreen(
         onGetStarted: () {
@@ -168,9 +162,9 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
             );
           },
         ),
-        bottomNavigationBar: isDisposableRoomActive
-            ? null
-            : LayoutBuilder(
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: LayoutBuilder(
                 builder: (context, constraints) {
                   final barWidth = constraints.maxWidth;
                   return GestureDetector(
@@ -223,6 +217,7 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
                   );
                 },
               ),
+        ),
       ),
     );
   }

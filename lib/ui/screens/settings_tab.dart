@@ -267,7 +267,11 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
                   ),
                   AppleRow(
                     title: 'Save Folder',
-                    subtitle: uploadDirAsync.value ?? 'Downloads/CloudPocket',
+                    subtitle: uploadDirAsync.when(
+                      data: (path) => path,
+                      loading: () => 'Loading folder…',
+                      error: (_, __) => 'Folder unavailable. Tap to choose a folder.',
+                    ),
                     trailing: Icon(Icons.folder_open_rounded, size: 18, color: colors.blue),
                     onTap: () => _pickUploadDirectory(context),
                   ),

@@ -37,6 +37,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
   @override
   void initState() {
     super.initState();
+    if (ref.read(sessionProvider).enableTunnel) _selectedChip = SharingInterfaceChip.tunnel;
     _slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -81,7 +82,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
         break;
     }
 
-    if (rawTarget.isEmpty) {
+    if (rawTarget.isEmpty && _selectedChip != SharingInterfaceChip.tunnel) {
       if (serverState.localUrl != null && serverState.localUrl!.isNotEmpty) {
         rawTarget = serverState.localUrl!;
       } else if (allIps.isNotEmpty) {
@@ -245,7 +246,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
     final hasUsableNetwork = hasWifi || hasHotspot || (serverState.tunnelUrl != null && serverState.tunnelUrl!.isNotEmpty);
 
     final isTunnelSelected = _selectedChip == SharingInterfaceChip.tunnel;
-    final isTunnelConnecting = isTunnelSelected && serverState.isTunnelConnecting;
+    final isTunnelConnecting = isTunnelSelected && currentUrl.isEmpty && serverState.tunnelError == null;
     final isTunnelFailed = isTunnelSelected && serverState.tunnelError != null;
 
     final activeSpeedMb = (stats.bandwidthBytesPerSec / (1024 * 1024)).toStringAsFixed(1);
@@ -333,7 +334,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                         const SizedBox(height: 16),
 
                         // QR Card / Network State / Tunnel Connecting
-                        if (!hasUsableNetwork && !isTunnelConnecting) ...[
+                        if (!hasUsableNetwork && !isTunnelSelected) ...[
                           Container(
                             width: 236,
                             height: 236,

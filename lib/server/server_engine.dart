@@ -555,6 +555,9 @@ class ServerEngine {
       if (_disposableRoom == null) {
         return Response(404, body: 'Room not active');
       }
+      if (!_disposableRoom!.chatHub.mayViewAttachment(req.headers['x-room-view-key'])) {
+        return Response.forbidden('Open the attachment from the app chat');
+      }
       final safeName = p.basename(Uri.decodeComponent(filename));
       final file = File('${_disposableRoom!.tempDirectory.path}${Platform.pathSeparator}$safeName');
       if (!await file.exists()) {
@@ -565,7 +568,7 @@ class ServerEngine {
       final length = await file.length();
 
       final rangeHeader = req.headers['range'];
-      if (rangeHeader != null && rangeHeader.startsWith('bytes=')) {
+      if (length > 0 && rangeHeader != null && rangeHeader.startsWith('bytes=')) {
         try {
           final rangeSpec = rangeHeader.substring(6).trim();
           final parts = rangeSpec.split('-');
@@ -579,7 +582,8 @@ class ServerEngine {
             start = int.parse(parts[0]);
             end = (parts.length > 1 && parts[1].isNotEmpty) ? int.parse(parts[1]) : length - 1;
           }
-          if (start < 0 || start >= length || end >= length || start > end) {
+          end = math.min(end, length - 1);
+          if (start < 0 || start >= length || start > end) {
             return Response(416, headers: {'content-range': 'bytes */$length'});
           }
           final contentLength = end - start + 1;

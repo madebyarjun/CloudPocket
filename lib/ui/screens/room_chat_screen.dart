@@ -36,7 +36,8 @@ class RoomChatScreen extends StatefulWidget {
 }
 
 class _RoomChatScreenState extends State<RoomChatScreen> {
-  static const MethodChannel _securityChannel = MethodChannel('com.cloudpocket.app/security');
+  static const MethodChannel _securityChannel =
+      MethodChannel('com.cloudpocket.app/security');
 
   WebSocketChannel? _channel;
   final List<ChatMessage> _messages = [];
@@ -49,6 +50,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
   String? _activePin;
   String? _activeToken;
   String? _myParticipantId;
+  String? _attachmentKey;
+  int? _participantCount;
   int _remainingSeconds = 0;
   Timer? _countdownTimer;
   Timer? _reconnectTimer;
@@ -151,7 +154,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
       host: uri.host,
       port: uri.hasPort ? uri.port : null,
       path: path,
-      queryParameters: uri.queryParameters.isNotEmpty ? uri.queryParameters : null,
+      queryParameters:
+          uri.queryParameters.isNotEmpty ? uri.queryParameters : null,
     );
   }
 
@@ -181,6 +185,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         _activeToken = json['roomToken'] as String? ?? _activeToken;
         _initE2e();
         setState(() {
+          _attachmentKey = json['attachmentKey'] as String?;
           _myParticipantId = json['participantId'] as String?;
           _roomName = json['roomName'] as String? ?? _roomName;
           _roomCode = json['roomCode'] as String? ?? '';
@@ -190,7 +195,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
           if (history != null && _messages.isEmpty) {
             for (final item in history) {
               if (item is Map<String, dynamic>) {
-                _messages.add(_processIncomingMessage(ChatMessage.fromJson(item)));
+                _messages
+                    .add(_processIncomingMessage(ChatMessage.fromJson(item)));
               }
             }
           }
@@ -203,6 +209,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         final rem = json['remainingSeconds'] as int? ?? 0;
         setState(() {
           _remainingSeconds = rem;
+          _participantCount =
+              json['participantCount'] as int? ?? _participantCount;
         });
         if (_countdownTimer == null || !_countdownTimer!.isActive) {
           _startLocalCountdown();
@@ -213,22 +221,6 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         final msg = _processIncomingMessage(ChatMessage.fromJson(json));
         setState(() {
           _messages.add(msg);
-        });
-        _scrollToBottom();
-        break;
-
-      case 'participant_joined':
-        final part = json['participant'] as Map<String, dynamic>?;
-        final name = part?['nickname'] ?? 'Someone';
-        setState(() {
-          _messages.add(ChatMessage(
-            seq: _messages.length + 1,
-            type: ChatMessageType.system,
-            senderId: 'system',
-            senderNickname: 'System',
-            text: '$name joined the room',
-            timestamp: DateTime.now(),
-          ));
         });
         _scrollToBottom();
         break;
@@ -250,7 +242,10 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
   }
 
   ChatMessage _processIncomingMessage(ChatMessage msg) {
-    if (msg.isE2e && _e2eService != null && msg.ciphertext != null && msg.iv != null) {
+    if (msg.isE2e &&
+        _e2eService != null &&
+        msg.ciphertext != null &&
+        msg.iv != null) {
       try {
         final decrypted = _e2eService!.decrypt(
           ciphertext: msg.ciphertext!,
@@ -266,7 +261,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
 
   Future<void> _promptForPin({bool isRetry = false}) async {
     final pinController = TextEditingController();
-    final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
+    final colors = Theme.of(context).extension<CloudPocketColors>() ??
+        CloudPocketColors.light;
 
     final enteredPin = await AppleDialog.show<String>(
       context: context,
@@ -276,7 +272,9 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            isRetry ? 'The PIN was incorrect. Please try again:' : 'Enter room PIN to join:',
+            isRetry
+                ? 'The PIN was incorrect. Please try again:'
+                : 'Enter room PIN to join:',
             style: TextStyle(fontSize: 14, color: colors.label2),
             textAlign: TextAlign.center,
           ),
@@ -291,7 +289,9 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
               hintStyle: TextStyle(color: colors.label2),
               filled: true,
               fillColor: colors.fill,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none),
             ),
             onSubmitted: (val) => Navigator.of(context).pop(val.trim()),
           ),
@@ -304,7 +304,9 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(pinController.text.trim()),
-          child: Text('Enter', style: TextStyle(color: colors.blue, fontWeight: FontWeight.bold)),
+          child: Text('Enter',
+              style:
+                  TextStyle(color: colors.blue, fontWeight: FontWeight.bold)),
         ),
       ],
     );
@@ -425,11 +427,11 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
       }
 
       file.openRead().listen(
-        (chunk) => req.sink.add(chunk),
-        onDone: () => req.sink.close(),
-        onError: (Object err) => req.sink.addError(err),
-        cancelOnError: true,
-      );
+            (chunk) => req.sink.add(chunk),
+            onDone: () => req.sink.close(),
+            onError: (Object err) => req.sink.addError(err),
+            cancelOnError: true,
+          );
 
       final streamedRes = await req.send().timeout(const Duration(minutes: 2));
       final res = await http.Response.fromStream(streamedRes);
@@ -437,7 +439,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
       if (mounted) {
         setState(() => _isUploadingMedia = false);
         if (res.statusCode != 200) {
-          AppleToast.show(context, 'Media upload failed (HTTP ${res.statusCode})');
+          AppleToast.show(
+              context, 'Media upload failed (HTTP ${res.statusCode})');
         }
       }
     } catch (_) {
@@ -450,7 +453,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
+    final colors = Theme.of(context).extension<CloudPocketColors>() ??
+        CloudPocketColors.light;
     final timeStr = _formatRemaining();
 
     if (_isBurned) {
@@ -462,11 +466,15 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.local_fire_department_rounded, size: 64, color: colors.red),
+                Icon(Icons.local_fire_department_rounded,
+                    size: 64, color: colors.red),
                 const SizedBox(height: 16),
                 Text(
-                  'Room Burned & Erased',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: colors.label),
+                  'Room ended',
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: colors.label),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -495,191 +503,262 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
                     color: colors.glass,
-                    border: Border(bottom: BorderSide(color: colors.sep, width: 0.5)),
+                    border: Border(
+                        bottom: BorderSide(color: colors.sep, width: 0.5)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Back button (‹ Room)
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Text(
-                          '‹ Room',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                            color: colors.blue,
-                            fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                          ),
-                        ),
-                      ),
-                      // Center Room Code
-                      Text(
-                        _roomCode.isNotEmpty ? _roomCode : _roomName,
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: colors.label,
-                          fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                        ),
-                      ),
-                      // Countdown Pill
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(255, 59, 48, 0.14),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          timeStr,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: colors.red,
-                            fontFeatures: const [FontFeature.tabularFigures()],
-                            fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                          ),
-                        ),
-                      ),
+                      BackButton(color: colors.blue),
+                      Expanded(
+                          child: Wrap(
+                              spacing: 8,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                            Icon(Icons.access_time_rounded,
+                                color: colors.orange, size: 20),
+                            Text('Room ends in',
+                                style: TextStyle(
+                                    color: colors.label2, fontSize: 12)),
+                            Text(timeStr,
+                                style: TextStyle(
+                                    color: colors.red,
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.bold,
+                                    fontFeatures: const [
+                                      FontFeature.tabularFigures()
+                                    ])),
+                            if (_e2eService != null)
+                              Chip(
+                                  avatar: Icon(Icons.lock_outline,
+                                      size: 13, color: colors.label2),
+                                  label: const Text('Encrypted payloads',
+                                      style: TextStyle(fontSize: 11)),
+                                  backgroundColor: colors.fill),
+                            if (_participantCount != null)
+                              Chip(
+                                  label: Text('$_participantCount online'),
+                                  backgroundColor: colors.fill),
+                            if (_roomCode.isNotEmpty)
+                              Chip(
+                                  label: Text(_roomCode,
+                                      style: TextStyle(
+                                          color: colors.blue, fontSize: 12)),
+                                  backgroundColor: colors.fill),
+                          ])),
                     ],
                   ),
                 ),
               ),
             ),
 
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+              color: colors.fill,
+              child: Row(children: [
+                Icon(Icons.shield_outlined, size: 15, color: colors.orange),
+                const SizedBox(width: 8),
+                Expanded(
+                    child: Text(
+                        'Room admission credentials are shared with the host and transport relay.',
+                        style: TextStyle(fontSize: 11, color: colors.label2))),
+              ]),
+            ),
             // Chat Message Feed (.chat)
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final msg = _messages[index];
-                  final isMe = msg.senderId == _myParticipantId;
-
-                  // System message (.b.sys)
-                  if (msg.type == ChatMessageType.system) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Center(
-                        child: Text(
-                          msg.text ?? '',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: colors.label2,
-                            fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-
-                  // Media Attachment Bubble (.b.med)
-                  if (msg.type == ChatMessageType.file) {
-                    return Align(
-                      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                          if (msg.fileDownloadPath != null) {
-                            final fname = msg.filename ?? 'media';
-                            final remoteUrl = '$_baseHttpUrl${msg.fileDownloadPath}';
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => RoomMediaViewerScreen(
-                                  filename: fname,
-                                  fileSize: msg.fileSize ?? 0,
-                                  category: classifyRoomMedia(fname, msg.fileMimeType),
-                                  remoteUrl: remoteUrl,
-                                  headers: {
-                                    if (_activePin?.isNotEmpty == true) 'X-Room-Pin': _activePin!,
-                                    if (_activeToken?.isNotEmpty == true) 'X-Room-Token': _activeToken!,
-                                  },
-                                ),
-                              ),
-                            ).then((_) { if (mounted) _enableSecureMode(); });
-                          }
-                        },
-                        child: Container(
-                          width: 200,
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          padding: const EdgeInsets.all(10),
+              child: CustomPaint(
+                  painter: _RoomWatermark(
+                      _nickname, colors.label.withOpacity(0.035)),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    itemCount: _messages.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 28),
+                          padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: colors.card,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: colors.shadow,
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 110,
+                              color: colors.card,
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: colors.shadow),
+                          child: Column(children: [
+                            Container(
+                                width: 56,
+                                height: 56,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  gradient: const LinearGradient(
-                                    colors: [Color(0xFF5AC8FA), Color(0xFF5856D6)],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
+                                    color: colors.blue,
+                                    borderRadius: BorderRadius.circular(18)),
+                                child: const Icon(Icons.lock_outline,
+                                    color: Colors.white)),
+                            const SizedBox(height: 16),
+                            Text(_roomName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: colors.label,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 9),
+                            Text(
+                                "Messages stay in the host's memory. Shared media uses temporary device storage. The room closes when its timer expires or the host ends it.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: colors.label2,
+                                    fontSize: 13,
+                                    height: 1.7)),
+                          ]),
+                        );
+                      }
+                      final msg = _messages[index - 1];
+                      final isMe = msg.senderId == _myParticipantId;
+
+                      // System message (.b.sys)
+                      if (msg.type == ChatMessageType.system) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Center(
+                            child: Text(
+                              msg.text ?? '',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: colors.label2,
+                                fontFamilyFallback:
+                                    CloudPocketTheme.fontFallbacks,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      // Media Attachment Bubble (.b.med)
+                      if (msg.type == ChatMessageType.file) {
+                        return Align(
+                          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 280),
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(color: colors.card, borderRadius: BorderRadius.circular(18)),
+                            child: RoomMediaBubble(
+                              message: msg,
+                              remoteUrl: msg.fileDownloadPath == null ? null : '$_baseHttpUrl${msg.fileDownloadPath}',
+                              headers: {
+                                if (_attachmentKey != null) 'X-Room-View-Key': _attachmentKey!,
+                                if (_activePin?.isNotEmpty == true) 'X-Room-Pin': _activePin!,
+                                if (_activeToken?.isNotEmpty == true) 'X-Room-Token': _activeToken!,
+                              },
+                              onViewerClosed: () { if (mounted) _enableSecureMode(); },
+                            ),
+                          ),
+                        );
+                      }
+                      // Text Message Bubble (.b.out / .b.in)
+                      return Align(
+                        alignment:
+                            isMe ? Alignment.centerRight : Alignment.centerLeft,
+                        child: Column(
+                            crossAxisAlignment: isMe
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 12),
+                                  child: Wrap(
+                                      spacing: 5,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 10,
+                                            backgroundColor: Color(int.tryParse(
+                                                    msg.color.replaceFirst(
+                                                        "#", "ff"),
+                                                    radix: 16) ??
+                                                0xff64748b),
+                                            child: Text(
+                                                msg.senderNickname.isEmpty
+                                                    ? "?"
+                                                    : msg.senderNickname
+                                                        .characters.first,
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10))),
+                                        Text(isMe ? "You" : msg.senderNickname,
+                                            style: TextStyle(
+                                                color: colors.label,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold)),
+                                        Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 2),
+                                            decoration: BoxDecoration(
+                                                color: colors.fill,
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            child: Text(
+                                                msg.isSecureClient
+                                                    ? "App"
+                                                    : "Browser",
+                                                style: TextStyle(
+                                                    color: colors.label2,
+                                                    fontSize: 10))),
+                                        Text(
+                                            TimeOfDay.fromDateTime(
+                                                    msg.timestamp.toLocal())
+                                                .format(context),
+                                            style: TextStyle(
+                                                color: colors.label2,
+                                                fontSize: 10)),
+                                        if (msg.isE2e)
+                                          Icon(Icons.lock_outline,
+                                              size: 12, color: colors.label2),
+                                      ])),
+                              Container(
+                                margin: const EdgeInsets.symmetric(vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 9),
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.86),
+                                decoration: BoxDecoration(
+                                  color: isMe ? colors.blue : colors.card,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: const Radius.circular(20),
+                                    topRight: const Radius.circular(20),
+                                    bottomLeft: Radius.circular(isMe ? 20 : 6),
+                                    bottomRight: Radius.circular(isMe ? 6 : 20),
+                                  ),
+                                  boxShadow: isMe ? null : colors.shadow,
+                                ),
+                                child: Text(
+                                  msg.text ?? '',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: isMe ? Colors.white : colors.label,
+                                    fontFamilyFallback:
+                                        CloudPocketTheme.fontFallbacks,
                                   ),
                                 ),
-                                alignment: Alignment.center,
-                                child: const Icon(Icons.lock_rounded, color: Colors.white, size: 34),
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                msg.filename ?? 'Tap to view securely',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: colors.label2,
-                                  fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-
-                  // Text Message Bubble (.b.out / .b.in)
-                  return Align(
-                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
-                      decoration: BoxDecoration(
-                        color: isMe ? colors.blue : colors.card,
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(20),
-                          topRight: const Radius.circular(20),
-                          bottomLeft: Radius.circular(isMe ? 20 : 6),
-                          bottomRight: Radius.circular(isMe ? 6 : 20),
-                        ),
-                        boxShadow: isMe ? null : colors.shadow,
-                      ),
-                      child: Text(
-                        msg.text ?? '',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: isMe ? Colors.white : colors.label,
-                          fontFamilyFallback: CloudPocketTheme.fontFallbacks,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                            ]),
+                      );
+                    },
+                  )),
             ),
 
             // Input Bar (.inp)
             Container(
               padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
-              color: Colors.transparent,
+              decoration: BoxDecoration(
+                  color: colors.glass,
+                  border: Border(top: BorderSide(color: colors.sep))),
               child: Row(
                 children: [
                   // Attachment button
@@ -697,9 +776,11 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                           ? SizedBox(
                               width: 16,
                               height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: colors.blue),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: colors.blue),
                             )
-                          : Icon(Icons.add_rounded, color: colors.blue, size: 24),
+                          : Icon(Icons.add_rounded,
+                              color: colors.blue, size: 24),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -713,6 +794,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                       ),
                       child: TextField(
                         controller: _textController,
+                        minLines: 1,
+                        maxLines: 5,
                         style: TextStyle(
                           fontSize: 15,
                           color: colors.label,
@@ -726,7 +809,8 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                             fontFamilyFallback: CloudPocketTheme.fontFallbacks,
                           ),
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 11),
                         ),
                         onSubmitted: (_) => _sendMessage(),
                       ),
@@ -737,21 +821,15 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                   GestureDetector(
                     onTap: _sendMessage,
                     child: Container(
-                      width: 38,
-                      height: 38,
+                      width: 46,
+                      height: 46,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: colors.blue,
                       ),
                       alignment: Alignment.center,
-                      child: const Text(
-                        '↑',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                      child: const Icon(Icons.send_rounded,
+                          color: Colors.white, size: 21),
                     ),
                   ),
                 ],
@@ -762,4 +840,40 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
       ),
     );
   }
+}
+
+class _RoomWatermark extends CustomPainter {
+  final String name;
+  final Color color;
+  _RoomWatermark(this.name, this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final label = TextPainter(
+        text: TextSpan(
+            text: name,
+            style: TextStyle(
+                color: color, fontSize: 19, fontWeight: FontWeight.bold)),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+        ellipsis: '…')
+      ..layout(maxWidth: 110);
+    canvas.save();
+    canvas.clipRect(Offset.zero & size);
+    for (double y = 16; y < size.height + 26; y += 72) {
+      for (double x = 8; x < size.width; x += 126) {
+        canvas.save();
+        canvas.translate(x, y);
+        canvas.rotate(-0.43);
+        label.paint(canvas, Offset.zero);
+        canvas.restore();
+      }
+    }
+    canvas.restore();
+    label.dispose();
+  }
+
+  @override
+  bool shouldRepaint(_RoomWatermark oldDelegate) =>
+      oldDelegate.name != name || oldDelegate.color != color;
 }
