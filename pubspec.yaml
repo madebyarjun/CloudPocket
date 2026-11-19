@@ -2,7 +2,7 @@ name: cloud_pocket
 description: A mobile-based personal file-sharing server for Android.
 publish_to: 'none'
 
-version: 1.0.2+3
+version: 1.0.3+4
 
 environment:
   sdk: '>=3.1.5 <4.0.0'
@@ -57,4 +57,5 @@ flutter:
   assets:
     - assets/web/
     - assets/images/
+    - assets/guide/
 

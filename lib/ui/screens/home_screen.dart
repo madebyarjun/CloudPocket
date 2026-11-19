@@ -23,7 +23,11 @@ import 'package:cloud_pocket/ui/screens/disposable_room_setup_screen.dart';
 import 'package:cloud_pocket/ui/widgets/sharing_live_view.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.shareKey, this.reachKey, this.modeKeys, this.onPermissionsFinished});
+  final Key? shareKey;
+  final Key? reachKey;
+  final Map<int, Key>? modeKeys;
+  final VoidCallback? onPermissionsFinished;
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -42,6 +46,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await PermissionService.requestInitialPermissions();
+      if (!mounted) return;
+      widget.onPermissionsFinished?.call();
       _checkBatteryOptimization();
       _checkClipboardForRoomLink();
     });
@@ -461,6 +467,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
               // Mode Switcher: Send Files / Receive Mode / Room (.seg)
               AppleSegmentedControl<int>(
                 margin: const EdgeInsets.only(top: 16),
+                segmentKeys: widget.modeKeys,
                 values: const [0, 1, 2],
                 labels: const ['Send Files', 'Receive Mode', 'Room'],
                 selectedValue: _activeMode,
@@ -505,7 +512,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
                 ),
               ],
 
-              ExpansionTile(title: const Text("Sharing options"), subtitle: Text(_getReachLabel(session)), children: [
+              ExpansionTile(title: Text("Sharing options", key: widget.reachKey), subtitle: Text(_getReachLabel(session)), children: [
               AppleGroup(
                 children: [
                   // Row 1: PIN protection
@@ -778,7 +785,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
           ),
           const SizedBox(height: 16),
-          AppleButton.primary(
+          AppleButton(
+            key: widget.shareKey,
             text: itemsCount > 0 ? '$itemsCount files ready · Edit' : 'Choose files',
             isSmall: true,
             onPressed: () {

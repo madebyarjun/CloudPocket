@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.3
+
+- **Added** a six-step Home tour and an illustrated user guide in Settings.
+- **Changed** first launch to introduce sharing controls directly on Home after startup permission requests finish.
+- **Fixed** first-launch detection waiting on unrelated secure-storage reads. The tour can be skipped or replayed from Settings.
+
 ## v1.0.2
 
 - **Added** foreground NFC listening for nearby room invitations.

@@ -1,3 +1,4 @@
+import 'package:cloud_pocket/ui/widgets/home_tour.dart';
 import 'package:cloud_pocket/providers/session_provider.dart';
 import 'package:cloud_pocket/models/share_session.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,85 @@ void main() {
     SharedPreferences.setMockInitialValues({
       'cp_setting_is_first_launch': true, // hasLaunched = true => isFirstLaunch = false
     });
+  });
+
+  for (final brightness in Brightness.values) {
+    testWidgets('Tour controls fit a small screen with large text in $brightness', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(320, 480));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final key = GlobalKey();
+      var dismissed = false;
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(brightness: brightness),
+        home: Builder(builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 2.5),
+          child: Stack(fit: StackFit.expand, children: [
+            Align(alignment: Alignment.topRight, child: SizedBox(key: key, width: 42, height: 48)),
+            HomeTour(step: 5, target: key, onShown: () {}, onNext: () => dismissed = true, onSkip: () {}),
+          ]),
+        )),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('6 of 6'), findsOneWidget);
+      await tester.ensureVisible(find.text('Done'));
+      await tester.tap(find.text('Done'));
+      expect(dismissed, isTrue);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  for (final skip in [false, true]) {
+    testWidgets('First install guide persists completion (skip: $skip)', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      await tester.pumpWidget(const ProviderScope(child: CloudPocketApp()));
+      await tester.pumpAndSettle();
+      expect(find.text('1 of 6'), findsOneWidget);
+      if (skip) {
+        await tester.tap(find.text('Skip'));
+      } else {
+        for (var step = 2; step <= 6; step++) {
+          await tester.tap(find.text('Next'));
+          await tester.pumpAndSettle();
+          expect(find.text('$step of 6'), findsOneWidget);
+          expect(find.text('Skip'), findsOneWidget);
+        }
+        await tester.tap(find.text('Done'));
+      }
+      await tester.pumpAndSettle();
+      expect(find.text('Choose files'), findsOneWidget);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('cp_setting_is_first_launch'), isTrue);
+    });
+  }
+
+  testWidgets('Settings replays the tour on Home', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: CloudPocketApp()));
+    await tester.pumpAndSettle();
+    expect(find.text('1 of 6'), findsNothing);
+    await tester.tap(find.byIcon(Icons.settings_outlined).last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Replay tour'));
+    await tester.tap(find.text('Replay tour'));
+    await tester.pumpAndSettle();
+    expect(find.text('1 of 6'), findsOneWidget);
+    await tester.tap(find.text('Skip'));
+    await tester.pumpAndSettle();
+    expect(find.text('1 of 6'), findsNothing);
+  });
+
+  testWidgets('Returning user can open and close the guide from Settings', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: CloudPocketApp()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.settings_outlined).last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('User guide'));
+    await tester.tap(find.text('User guide'));
+    await tester.pumpAndSettle();
+    expect(find.text('Send a file'), findsOneWidget);
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsTab), findsOneWidget);
+    expect(find.text('User guide'), findsOneWidget);
   });
 
   testWidgets('CloudPocketApp smoke test - verifies v1.5 dashboard rendering', (WidgetTester tester) async {

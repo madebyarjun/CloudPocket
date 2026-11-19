@@ -154,6 +154,9 @@ class SettingsNotifier extends Notifier<SettingsState> {
       final providerStr = prefs.getString(_kDefaultProviderKey);
       final expiryStr = prefs.getString(_kDefaultExpiryKey);
       final hasLaunched = prefs.getBool(_kFirstLaunchKey) ?? false;
+      if (!hasLaunched) {
+        state = state.copyWith(isFirstLaunch: true);
+      }
       final defaultEnableTunnel = prefs.getBool(_kDefaultEnableTunnelKey) ?? true;
       final keepRunning = prefs.getBool(_kKeepRunningKey) ?? true;
       final customUploadDir = prefs.getString(_kCustomUploadDirKey);
@@ -226,7 +229,6 @@ class SettingsNotifier extends Notifier<SettingsState> {
         defaultExpiry: expiry,
         themeMode: themeMode,
         primaryColorValue: primaryColor,
-        isFirstLaunch: !hasLaunched,
         defaultEnableTunnel: defaultEnableTunnel,
         keepRunning: keepRunning,
         customUploadDirectory: customUploadDir,

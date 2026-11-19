@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:cloud_pocket/providers/settings_provider.dart';
 import 'package:cloud_pocket/ui/screens/history_tab.dart';
 import 'package:cloud_pocket/ui/screens/home_screen.dart';
-import 'package:cloud_pocket/ui/screens/onboarding_screen.dart';
+import 'package:cloud_pocket/ui/widgets/home_tour.dart';
+import 'package:cloud_pocket/providers/server_provider.dart';
 import 'package:cloud_pocket/ui/screens/settings_tab.dart';
 import 'package:cloud_pocket/ui/screens/transfers_tab.dart';
 import 'package:cloud_pocket/ui/screens/received_files_tab.dart';
@@ -22,7 +23,42 @@ class AppShell extends ConsumerStatefulWidget {
   ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMixin {
+class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMixin, WidgetsBindingObserver {
+  final _targets = List.generate(6, (_) => GlobalKey());
+  final _sendMode = GlobalKey();
+  bool _permissionsFinished = false;
+  bool _replay = false;
+  bool _automatic = false;
+  int _step = 0;
+  bool _foreground = true;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState value) {
+    setState(() => _foreground = value == AppLifecycleState.resumed);
+  }
+
+  void _closeTour() {
+    setState(() {
+      _automatic = false;
+      _replay = false;
+      _step = 0;
+    });
+  }
+
+  void _replayTour() {
+    if (ref.read(serverProvider).isRunning) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Replay the tour after your sharing session ends.')),
+      );
+      return;
+    }
+    _handleNavigationTap(0);
+    setState(() {
+      _replay = true;
+      _step = 0;
+    });
+  }
+
   int _settingsTapCount = 0;
   DateTime? _lastSettingsTapTime;
   int _previousIndex = 0;
@@ -35,6 +71,8 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _foreground = WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed || WidgetsBinding.instance.lifecycleState == null;
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -56,16 +94,22 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _fadeController.dispose();
     super.dispose();
   }
 
-  final List<Widget> _tabs = const [
-    HomeScreen(),
-    ReceivedFilesTab(),
-    TransfersTab(),
-    HistoryTab(),
-    SettingsTab(),
+  late final List<Widget> _tabs = [
+    HomeScreen(
+      shareKey: _targets[0],
+      reachKey: _targets[1],
+      modeKeys: {0: _sendMode, 1: _targets[2], 2: _targets[3]},
+      onPermissionsFinished: () => setState(() => _permissionsFinished = true),
+    ),
+    const ReceivedFilesTab(),
+    const TransfersTab(),
+    const HistoryTab(),
+    SettingsTab(onReplayTour: _replayTour),
   ];
 
   void _handleNavigationTap(int idx) {
@@ -112,23 +156,24 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
     final currentIndex = ref.watch(activeTabProvider);
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
 
-    if (settings.isFirstLaunch) {
-      return OnboardingScreen(
-        onGetStarted: () {
-          ref.read(settingsProvider.notifier).completeOnboarding();
-        },
-      );
-    }
+    final showTour = (_automatic || _replay || settings.isFirstLaunch) &&
+        _permissionsFinished && _foreground && currentIndex == 0 &&
+        ModalRoute.of(context)?.isCurrent == true && !ref.watch(serverProvider).isRunning;
 
     return WillPopScope(
       onWillPop: () async {
+        if (showTour) {
+          _closeTour();
+          return false;
+        }
         if (currentIndex != 0) {
           _handleNavigationTap(0);
           return false;
         }
         return true;
       },
-      child: Scaffold(
+      child: Stack(fit: StackFit.expand, children: [
+        ExcludeSemantics(excluding: showTour, child: Scaffold(
         backgroundColor: colors.bg,
         extendBody: true,
         body: AnimatedBuilder(
@@ -201,13 +246,13 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
                           activeColor: colors.blue,
                         ),
                         NavBarItem(
-                          icon: const Icon(Icons.schedule_outlined),
+                          icon: Icon(Icons.schedule_outlined, key: _targets[4]),
                           activeIcon: const Icon(Icons.schedule_rounded),
                           inactiveColor: colors.label2,
                           activeColor: colors.blue,
                         ),
                         NavBarItem(
-                          icon: const Icon(Icons.settings_outlined),
+                          icon: Icon(Icons.settings_outlined, key: _targets[5]),
                           activeIcon: const Icon(Icons.settings_rounded),
                           inactiveColor: colors.label2,
                           activeColor: colors.blue,
@@ -218,7 +263,22 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
                 },
               ),
         ),
-      ),
+      )),
+      if (showTour)
+        HomeTour(
+          step: _step,
+          target: _targets[_step],
+          fallback: _step == 0 ? _sendMode : null,
+          onShown: () {
+            if (settings.isFirstLaunch && !_automatic) {
+              setState(() => _automatic = true);
+              ref.read(settingsProvider.notifier).completeOnboarding();
+            }
+          },
+          onNext: () => _step == 5 ? _closeTour() : setState(() => _step++),
+          onSkip: _closeTour,
+        ),
+      ]),
     );
   }
 }

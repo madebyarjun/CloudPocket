@@ -1,3 +1,4 @@
+import 'package:cloud_pocket/ui/screens/onboarding_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,8 @@ final uploadDirectoryProvider = FutureProvider.autoDispose<String>((ref) async {
 });
 
 class SettingsTab extends ConsumerStatefulWidget {
-  const SettingsTab({super.key});
+  const SettingsTab({super.key, this.onReplayTour});
+  final VoidCallback? onReplayTour;
 
   @override
   ConsumerState<SettingsTab> createState() => _SettingsTabState();
@@ -284,6 +286,39 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
                   ),
                 ],
               ),
+
+              AppleGroup(
+                margin: const EdgeInsets.only(top: 16),
+                children: [
+                  AppleRow(
+                    showSeparator: false,
+                    icon: AppleIconTile(
+                      backgroundColor: colors.blue,
+                      icon: const Icon(Icons.menu_book_rounded, color: Colors.white, size: 18),
+                    ),
+                    title: 'User guide',
+                    trailing: Icon(Icons.chevron_right, color: colors.label2),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                      builder: (routeContext) => OnboardingScreen(
+                        fromSettings: true,
+                        onGetStarted: () => Navigator.of(routeContext).pop(),
+                      ),
+                    )),
+                  ),
+                ],
+              ),
+
+              if (widget.onReplayTour != null)
+                AppleGroup(
+                  margin: const EdgeInsets.only(top: 8),
+                  children: [
+                    AppleRow(
+                      title: 'Replay tour',
+                      trailing: Icon(Icons.chevron_right, color: colors.label2),
+                      onTap: widget.onReplayTour,
+                    ),
+                  ],
+                ),
 
               // Caption: Background protection (.cap)
               ExpansionTile(title: const Text('Background sharing'), children: [

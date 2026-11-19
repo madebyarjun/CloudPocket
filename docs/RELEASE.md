@@ -2,14 +2,14 @@
 
 ## Published Android packages
 
-GitHub release v1.0.2 contains separate ARM64 and ARMv7 APKs for Android 8.0+. Both passed Android SDK `apksigner verify --print-certs`. Their SHA-256 file hashes match the assets published on GitHub. The signing certificate subject is `CN=CloudPocket` and its SHA-256 fingerprint is `498ac15c9ed146ff74e0671750f5c0579b9c2eabf10426c9fae99a32fe31f34e`.
+GitHub release v1.0.3 contains separate ARM64 and ARMv7 APKs for Android 8.0+. Both passed Android SDK `apksigner verify --print-certs`. Their SHA-256 file hashes match the assets published on GitHub. The signing certificate subject is `CN=CloudPocket` and its SHA-256 fingerprint is `498ac15c9ed146ff74e0671750f5c0579b9c2eabf10426c9fae99a32fe31f34e`.
 
 | Architecture | APK SHA-256 |
 | --- | --- |
-| arm64-v8a | `c60342ae722c983534af6d28005321ba8d570f114032577566735cd0d890a429` |
-| armeabi-v7a | `874c93005e6d35ef15d4284b56137a5ba192e0c66b53950dbb1bcdff1f6ed966` |
+| arm64-v8a | `205b053466e87bb7235a1efe4400f25e9d3433d884e03b22ee4bc61a1b61641d` |
+| armeabi-v7a | `5d332bd47a8ae22b0e5ef1b20d421f2b872b1e667e4305952723de73c54d142d` |
 
-v1.0.0 was a debug-signed test release. v1.0.1 introduced the release key used for v1.0.2. Preserve the private keystore and its backup for updates. Configure signing locally in `android/key.properties`. [Release downloads](https://github.com/madebyarjun/CloudPocket/releases) · [Version history](../CHANGELOG.md)
+v1.0.0 was a debug-signed test release. v1.0.1 introduced the release key used for subsequent releases. Preserve the private keystore and its backup for updates. Configure signing locally in `android/key.properties`. [Release downloads](https://github.com/madebyarjun/CloudPocket/releases) · [Version history](../CHANGELOG.md)
 
 ## Device verification
 

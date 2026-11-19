@@ -188,6 +188,7 @@ class AppleIconTile extends StatelessWidget {
 /// Sliding segmented control (.seg)
 class AppleSegmentedControl<T> extends StatelessWidget {
   final List<T> values;
+  final Map<T, Key>? segmentKeys;
   final List<String> labels;
   final T selectedValue;
   final ValueChanged<T> onValueChanged;
@@ -196,6 +197,7 @@ class AppleSegmentedControl<T> extends StatelessWidget {
   const AppleSegmentedControl({
     super.key,
     required this.values,
+    this.segmentKeys,
     required this.labels,
     required this.selectedValue,
     required this.onValueChanged,
@@ -249,6 +251,7 @@ class AppleSegmentedControl<T> extends StatelessWidget {
                 children: List.generate(values.length, (index) {
                   return Expanded(
                     child: GestureDetector(
+                      key: segmentKeys?[values[index]],
                       behavior: HitTestBehavior.opaque,
                       onTap: () => onValueChanged(values[index]),
                       child: Center(
