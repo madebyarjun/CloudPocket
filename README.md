@@ -5,25 +5,7 @@ Share files directly from your Android phone over Wi-Fi, a hotspot, or an option
 [![Download latest APK](https://img.shields.io/badge/Download_latest_APK-Android-167548)](https://github.com/madebyarjun/CloudPocket/releases/latest)
 [![Flutter checks](https://github.com/madebyarjun/CloudPocket/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/madebyarjun/CloudPocket/actions/workflows/checks.yml)
 
-<img src="docs/ui-review/screenshots/native-55-final-idle-home.png" width="200" alt="Android home screen"> <img src="docs/ui-review/screenshots/24-room-chat.png" width="200" alt="Disposable chat room"> <img src="docs/media/receive-demo.gif" width="200" alt="Animated walkthrough from Receive mode to completed transfer">
-
-[Watch the one-minute browser tour (WebM, sample files)](docs/media/browser-tour.webm)
-
-## Install on Android
-
-1. Open the download badge above and expand **Assets**. Android 8.0 or later is required.
-2. Choose **arm64-v8a** for most modern phones. Choose **armeabi-v7a** for older phones running 32-bit Android.
-3. Tap the downloaded APK. If Android prompts you, allow this browser or file manager to install unknown apps, then tap **Install**. You can revoke that permission afterward.
-
-**Published release:** v1.0.2. Both APKs are release-signed. The first v1.0.0 test APK used a different key. Moving from that version may require uninstalling it, which can erase its local data. [Release verification](docs/RELEASE.md) · [Changelog](CHANGELOG.md)
-
-## Why I built this
-
-I wanted to hand someone a file from my phone and have them open it in their browser. CloudPocket lets the phone host that exchange directly. For a short conversation around the files, the same phone can host a temporary room.
-
-## Known limitations
-
-Local file sharing and Bore use plain HTTP. Use a trusted network for local sessions. Browser attachments can be captured or copied. On one Android device, Cloudflare Quick Tunnel registered with the hotspot enabled after edge DNS lookup failed with it off. Two-phone NFC and locked-screen transfers still need physical verification. [Security details](docs/SECURITY.md)
+<img src="UI/screenshots/01_home_dashboard.jpg" width="200" alt="Choose files to share"> <img src="UI/screenshots/07_disposable_room_chat.jpg" width="200" alt="Temporary room chat"> <img src="docs/media/room-demo.gif" width="200" alt="Room setup, timer, invitation and chat walkthrough">
 
 ## Features
 
@@ -34,15 +16,14 @@ Local file sharing and Bore use plain HTTP. Use a trusted network for local sess
 - **Transfer controls:** Track uploads and downloads, view session history, and configure download limits with Vault mode.
 - **Android integration:** Background foreground service, network interface selection, camera QR scanning, and guarded room media viewing.
 
-## Getting started
+## Install and start sharing
 
-1. Install and open CloudPocket on an Android device, then grant the permissions needed for your chosen operation.
-2. Choose **Send**, **Receive**, or a **Disposable Room**.
-3. For local sharing, connect the devices to the same Wi-Fi or hotspot and disable public tunneling. For remote access, select a tunnel provider.
-4. Start the session and share its displayed link or QR code. File-sharing recipients can use a browser without installing the app.
-5. Stop the session or close the room when finished.
+1. Open **Download latest APK** above and expand **Assets**. Choose **arm64-v8a** for most phones or **armeabi-v7a** for older phones running 32-bit Android. Both require Android 8.0 or later.
+2. Open the APK and tap **Install**. If prompted, allow your browser or file manager to install unknown apps. You can revoke that permission afterward.
+3. Open CloudPocket and choose **Send**, **Receive**, or **Room**. For local sharing, connect both devices to the same Wi-Fi or hotspot. For remote access, select a tunnel provider.
+4. Start the session and share its link or QR code. Recipients can join in a browser. Stop sharing or close the room when finished.
 
-Tunnel availability depends on the provider and network. Cloudflare custom-domain provisioning requires your own account and credentials and has not been fully verified live.
+Upgrading from the v1.0.0 test APK may require a fresh install because the signing key changed. Uninstalling can erase local app data. [Release verification](docs/RELEASE.md) · [Changelog](CHANGELOG.md)
 
 ## Development setup
 
@@ -90,8 +71,9 @@ On Windows, the combined check script also validates JavaScript syntax:
 
 Production signing requires private configuration in `android/key.properties`; never commit signing keys or credentials. See [testing](docs/TESTING.md) and [release gates](docs/RELEASE.md) for device checks and publishing requirements.
 
-## Security and privacy
+## Known limitations and privacy
 
+- Cloudflare Quick Tunnel can fail during DNS lookup. Enabling the hotspot worked on one tested phone. Two-phone NFC and locked-screen transfer checks remain open.
 - Local file sharing uses HTTP. Network observers may see files and credentials. Local browser chat may fall back to plaintext when encryption is unavailable, with a visible warning; public HTTP chat without encryption is blocked.
 - Cloudflare and LocalTunnel terminate HTTPS at their relays. AES-256-GCM protects encrypted chat payloads, but the current credential exchange does not establish secrecy from relay operators. Bore uses unencrypted HTTP.
 - Room messages and participant state stay in memory. Temporary media is stored in an app-cache sandbox and removed during cleanup. Deletion unlinks files; it does not securely erase flash storage.
@@ -131,6 +113,7 @@ docs/             Architecture, security, testing, and release guidance
 - [Architecture](docs/ARCHITECTURE.md)
 - [Testing guide](docs/TESTING.md)
 - [Release readiness](docs/RELEASE.md)
+- [App screen gallery](UI/README.md)
 - [UI and functionality guide](docs/UI_UX_AND_FUNCTIONALITY_GUIDE.md)
 - [UI review](docs/ui-review/REPORT.md)
 

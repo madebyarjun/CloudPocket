@@ -1,6 +1,6 @@
 # CloudPocket — Verification & Testing Manual
 
-This document details the test inventory, static analysis procedures, regression checklists, and test reproduction commands for **CloudPocket** (v1.5.0+1).
+This document details the test inventory, static analysis procedures, regression checklists, and test reproduction commands for **CloudPocket**.
 
 ---
 
@@ -8,7 +8,7 @@ This document details the test inventory, static analysis procedures, regression
 
 CloudPocket maintains an automated test suite executed via Flutter's test runner.
 
-### 1.1 Test Suite Status & Baseline Execution
+### 1.1 Historical baseline (October 2026)
 - **Total Test Files**: 32 files
 - **Total Unit & Integration Tests**: 148 tests
 - **Static Analysis Result**: `0 issues found` (clean across all files)
@@ -18,7 +18,9 @@ CloudPocket maintains an automated test suite executed via Flutter's test runner
 
 ---
 
-## 2. Reconciled Automated Test Inventory
+For current results, see [Flutter checks](https://github.com/madebyarjun/CloudPocket/actions/workflows/checks.yml).
+
+## 2. Historical test inventory
 
 Every test file in `test/` has been verified and accounted for:
 

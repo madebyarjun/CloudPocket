@@ -3,9 +3,9 @@
 ![Room Chat Timeline Screenshot](../screenshots/07_disposable_room_chat.jpg)
 
 ## 1. Overview & Architectural Role
-The **Room Chat Screen** ([`RoomChatScreen`](file:///f:/Project/CloudPocket/lib/ui/screens/room_chat_screen.dart#L25-L650)) provides the live messaging and media exchange experience within a disposable room.
+The **Room Chat Screen** ([`RoomChatScreen`](../../lib/ui/screens/room_chat_screen.dart)) provides the live messaging and media exchange experience within a disposable room.
 
-Engineered from the ground up to prevent data retention, this interface is backed entirely by an in-memory WebSocket pipeline in [`ChatHub`](file:///f:/Project/CloudPocket/lib/server/chat_hub.dart). No message bubbles, voice notes, photos, or documents are ever saved to device storage or databases.
+Engineered from the ground up to prevent data retention, this interface is backed entirely by an in-memory WebSocket pipeline in [`ChatHub`](../../lib/server/chat_hub.dart). No message bubbles, voice notes, photos, or documents are ever saved to device storage or databases.
 
 ---
 

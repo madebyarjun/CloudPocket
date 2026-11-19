@@ -4,7 +4,7 @@
 ![Web Disposable Room Portal Screenshot](../screenshots/11_web_disposable_room.jpg)
 
 ## 1. Overview & Architectural Role
-The **Web Client Portals** ([`assets/web/`](file:///f:/Project/CloudPocket/assets/web/)) are the browser-rendered frontends served directly by CloudPocket's embedded Shelf server to any client device that visits the host's IP or tunnel URL.
+The **Web Client Portals** ([`assets/web/`](../../assets/web)) are the browser-rendered frontends served directly by CloudPocket's embedded Shelf server to any client device that visits the host's IP or tunnel URL.
 
 Because client devices do not install an app, the web interface must deliver an AirDrop-like, frictionless experience across mobile Safari (iOS), Google Chrome (Android/Windows/Mac), Microsoft Edge, and Firefox.
 
@@ -23,7 +23,7 @@ The web suite consists of two distinct portals:
   - Live connection status pill: *"Online (Direct Wi-Fi / Tunnel)"*.
 
 ### 2.2 Send Mode View (Downloading from Host)
-- **Batch Action**: **"Download All as ZIP"** button. Streams all staged files dynamically using [`ZipStreamer`](file:///f:/Project/CloudPocket/lib/server/zip_streamer.dart) without staging a giant ZIP file on host disk.
+- **Batch Action**: **"Download All as ZIP"** button. Streams all staged files dynamically using [`ZipStreamer`](../../lib/server/zip_streamer.dart) without staging a giant ZIP file on host disk.
 - **File Cards**:
   - Thumbnail previews for images, vector icons for documents/media.
   - Filename, size in MB/GB, and download count badge.

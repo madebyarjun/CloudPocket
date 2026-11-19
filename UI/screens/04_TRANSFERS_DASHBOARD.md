@@ -3,7 +3,7 @@
 ![Transfers Dashboard Screenshot](../screenshots/04_transfers_tab.jpg)
 
 ## 1. Overview & Architectural Role
-The **Transfers Dashboard** ([`TransfersTab`](file:///f:/Project/CloudPocket/lib/ui/screens/transfers_tab.dart#L15-L550)) is the second tab in the main curved navigation bar. It acts as an interactive real-time mission control for all active and recently completed file uploads and downloads between the host device and web clients.
+The **Transfers Dashboard** ([`TransfersTab`](../../lib/ui/screens/transfers_tab.dart)) is the second tab in the main curved navigation bar. It acts as an interactive real-time mission control for all active and recently completed file uploads and downloads between the host device and web clients.
 
 It provides visual metrics for throughput, ETA estimations, transfer directions (upload vs. download), client IP associations, and granular control (pause, resume, cancel).
 
@@ -54,5 +54,5 @@ When no transfers are currently active, the tab displays an elegant empty state:
 
 ## 3. UX Performance & Memory Safeguards
 
-- **Isolate-Free UI Smoothness**: Bandwidth calculations are throttled using a 250ms debouncer in [`TransfersNotifier`](file:///f:/Project/CloudPocket/lib/providers/transfers_provider.dart) to ensure that high-speed Wi-Fi 6 transfers (up to 80+ MB/s) do not stutter the Flutter 120Hz UI rendering loop.
+- **Isolate-Free UI Smoothness**: Bandwidth calculations are throttled using a 250ms debouncer in [`TransfersNotifier`](../../lib/providers/transfers_provider.dart) to ensure that high-speed Wi-Fi 6 transfers (up to 80+ MB/s) do not stutter the Flutter 120Hz UI rendering loop.
 - **Haptic Confirmations**: Soft haptic ticks when transfers complete successfully.

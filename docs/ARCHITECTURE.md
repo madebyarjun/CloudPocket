@@ -1,6 +1,6 @@
 # CloudPocket — System Architecture & Component Design
 
-This document provides the authoritative, verifiable architectural specification for the **CloudPocket** application (v1.5.0+1). It details the system topology, data flow, state management, networking subsystems, server lifecycle, and platform-specific integrations.
+This document provides the authoritative, verifiable architectural specification for the **CloudPocket** application. It details the system topology, data flow, state management, networking subsystems, server lifecycle, and platform-specific integrations.
 
 ---
 
@@ -98,19 +98,19 @@ The presentation layer is built with Flutter and structured around `flutter_rive
 
 | Provider | File | State Type | Role & Responsibilities |
 | :--- | :--- | :--- | :--- |
-| `serverProvider` | [`lib/providers/server_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/server_provider.dart) | `ServerState` | Controls the lifecycle of `ServerEngine` and `TunnelManager`. Resolves public and local upload directories, starts foreground services, acquires wake/Wi-Fi locks, and updates active URLs and latency. |
-| `sessionProvider` | [`lib/providers/session_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/session_provider.dart) | `ShareSession` | Stores current session configuration: selected files, PIN/password, Google auth requirement, Vault Mode settings, tunnel provider choice, and `RoomConfig`. |
-| `roomProvider` | [`lib/providers/room_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/room_provider.dart) | `DisposableRoom?` | Manages active disposable room state, countdown timer callbacks, manual "Burn Now" triggers, participant registry, and destruction propagation. |
-| `transfersProvider`| [`lib/providers/transfers_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/transfers_provider.dart)| `List<TransferRecord>`| Tracks active and completed uploads and downloads in real time with bytes transferred, total size, speed (bps), and status. |
-| `statsProvider` | [`lib/providers/stats_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/stats_provider.dart) | `ServerStats` | Aggregates bandwidth (bytes in/out, current upload/download speed), active WebSocket connection count, and visitor totals. |
-| `networkProvider` | [`lib/providers/network_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/network_provider.dart) | `NetworkState` | Monitors Wi-Fi and Cellular status via `connectivity_plus` and resolves local IP addresses (interfaces: `wlan0`, `ap0`, `eth0`). |
-| `settingsProvider` | [`lib/providers/settings_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/settings_provider.dart) | `SettingsState` | Persists user preferences: `deviceName`, default tunnel provider, default expiry duration, dark mode theme setting, and custom Bore VPS parameters via `shared_preferences`. |
-| `historyProvider` | [`lib/providers/history_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/history_provider.dart) | `List<ShareHistory>` | Persists logs of past file-sharing sessions to disk. |
-| `thumbnailProvider`| [`lib/providers/thumbnail_provider.dart`](file:///f:/Project/CloudPocket/lib/providers/thumbnail_provider.dart)| `ThumbnailState` | Orchestrates background thumbnail generation preheating for shared image and video files. |
+| `serverProvider` | [`lib/providers/server_provider.dart`](../lib/providers/server_provider.dart) | `ServerState` | Controls the lifecycle of `ServerEngine` and `TunnelManager`. Resolves public and local upload directories, starts foreground services, acquires wake/Wi-Fi locks, and updates active URLs and latency. |
+| `sessionProvider` | [`lib/providers/session_provider.dart`](../lib/providers/session_provider.dart) | `ShareSession` | Stores current session configuration: selected files, PIN/password, Google auth requirement, Vault Mode settings, tunnel provider choice, and `RoomConfig`. |
+| `roomProvider` | [`lib/providers/room_provider.dart`](../lib/providers/room_provider.dart) | `DisposableRoom?` | Manages active disposable room state, countdown timer callbacks, manual "Burn Now" triggers, participant registry, and destruction propagation. |
+| `transfersProvider`| [`lib/providers/transfers_provider.dart`](../lib/providers/transfers_provider.dart)| `List<TransferRecord>`| Tracks active and completed uploads and downloads in real time with bytes transferred, total size, speed (bps), and status. |
+| `statsProvider` | [`lib/providers/stats_provider.dart`](../lib/providers/stats_provider.dart) | `ServerStats` | Aggregates bandwidth (bytes in/out, current upload/download speed), active WebSocket connection count, and visitor totals. |
+| `networkProvider` | [`lib/providers/network_provider.dart`](../lib/providers/network_provider.dart) | `NetworkState` | Monitors Wi-Fi and Cellular status via `connectivity_plus` and resolves local IP addresses (interfaces: `wlan0`, `ap0`, `eth0`). |
+| `settingsProvider` | [`lib/providers/settings_provider.dart`](../lib/providers/settings_provider.dart) | `SettingsState` | Persists user preferences: `deviceName`, default tunnel provider, default expiry duration, dark mode theme setting, and custom Bore VPS parameters via `shared_preferences`. |
+| `historyProvider` | [`lib/providers/history_provider.dart`](../lib/providers/history_provider.dart) | `List<ShareHistory>` | Persists logs of past file-sharing sessions to disk. |
+| `thumbnailProvider`| [`lib/providers/thumbnail_provider.dart`](../lib/providers/thumbnail_provider.dart)| `ThumbnailState` | Orchestrates background thumbnail generation preheating for shared image and video files. |
 
 ### 2.2 Navigation Hierarchy (`AppShell`)
 
-`AppShell` ([`lib/ui/app_shell.dart`](file:///f:/Project/CloudPocket/lib/ui/app_shell.dart)) hosts an animated bottom navigation bar (`SmoothCurvedNavBar` wrapping `curved_navigation_bar`) switching across four main views:
+`AppShell` ([`lib/ui/app_shell.dart`](../lib/ui/app_shell.dart)) hosts an animated bottom navigation bar (`SmoothCurvedNavBar` wrapping `curved_navigation_bar`) switching across four main views:
 1. **Home / Share Setup (`HomeScreen`)**: Central hub for selecting files, configuring security/vault modes, picking tunnel modes, starting the server, and launching Disposable Chat Rooms. When active, displays `SharingLiveView`.
 2. **Live Transfers (`TransfersTab`)**: Real-time progress cards for all active uploads and downloads, with a live `SpeedSparkline` throughput graph.
 3. **Received Files (`ReceivedFilesTab`)**: Explorer for files uploaded by web clients into the device's public `Download/CloudPocket` directory.
@@ -124,7 +124,7 @@ The embedded HTTP server runs on `shelf` (v1.4.1) bound to `0.0.0.0:8080` (or th
 
 ### 3.1 Shelf Pipeline & Middleware Order
 
-Requests pass through an ordered Shelf pipeline in [`lib/server/server_engine.dart`](file:///f:/Project/CloudPocket/lib/server/server_engine.dart):
+Requests pass through an ordered Shelf pipeline in [`lib/server/server_engine.dart`](../lib/server/server_engine.dart):
 1. **`_corsMiddleware()`**: Appends standard CORS headers (`Access-Control-Allow-Origin: *`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`) and responds to HTTP `OPTIONS` preflight requests immediately with HTTP 200.
 2. **`_trafficTrackerMiddleware()`**: Intercepts the request and response body streams, counting bytes read and written to compute real-time throughput metrics dispatched to `statsProvider`.
 3. **`_authMiddleware()`**: Validates session cookies, query tokens, and authorization headers against the active `ShareSession` requirements. Bypasses authentication for public static assets (`/room`, `/room.js`, `/room.css`, `/styles.css`, `/app.js`, `/favicon.png`, `/logo.png`) and discovery endpoints.
@@ -160,14 +160,14 @@ sequenceDiagram
 
 | Route | Method | Handler / Logic | Auth Required? | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
-| `/` | `GET` | `_serveIndexHtml()` | No | Serves [`assets/web/index.html`](file:///f:/Project/CloudPocket/assets/web/index.html) (file sharing web client). |
-| `/styles.css` | `GET` | Static asset resolver | No | Serves [`assets/web/styles.css`](file:///f:/Project/CloudPocket/assets/web/styles.css). |
-| `/app.js` | `GET` | Static asset resolver | No | Serves [`assets/web/app.js`](file:///f:/Project/CloudPocket/assets/web/app.js). |
-| `/favicon.png` | `GET` | Static asset resolver | No | Serves [`assets/web/favicon.png`](file:///f:/Project/CloudPocket/assets/web/favicon.png). |
-| `/logo.png` | `GET` | Static asset resolver | No | Serves [`assets/web/logo.png`](file:///f:/Project/CloudPocket/assets/web/logo.png). |
-| `/room` | `GET` | `_serveRoomHtml()` | No | Serves [`assets/web/room.html`](file:///f:/Project/CloudPocket/assets/web/room.html) (disposable chat client). |
-| `/room.js` | `GET` | Static asset resolver | No | Serves [`assets/web/room.js`](file:///f:/Project/CloudPocket/assets/web/room.js). |
-| `/room.css` | `GET` | Static asset resolver | No | Serves [`assets/web/room.css`](file:///f:/Project/CloudPocket/assets/web/room.css). |
+| `/` | `GET` | `_serveIndexHtml()` | No | Serves [`assets/web/index.html`](../assets/web/index.html) (file sharing web client). |
+| `/styles.css` | `GET` | Static asset resolver | No | Serves [`assets/web/styles.css`](../assets/web/styles.css). |
+| `/app.js` | `GET` | Static asset resolver | No | Serves [`assets/web/app.js`](../assets/web/app.js). |
+| `/favicon.png` | `GET` | Static asset resolver | No | Serves [`assets/web/favicon.png`](../assets/web/favicon.png). |
+| `/logo.png` | `GET` | Static asset resolver | No | Serves [`assets/web/logo.png`](../assets/web/logo.png). |
+| `/room` | `GET` | `_serveRoomHtml()` | No | Serves [`assets/web/room.html`](../assets/web/room.html) (disposable chat client). |
+| `/room.js` | `GET` | Static asset resolver | No | Serves [`assets/web/room.js`](../assets/web/room.js). |
+| `/room.css` | `GET` | Static asset resolver | No | Serves [`assets/web/room.css`](../assets/web/room.css). |
 | `/ws/transfers` | `GET` | `_handleTransfersWebSocket()` | Yes (if enabled) | WebSocket endpoint for real-time file upload/download notifications and server stats. |
 | `/ws/room` | `GET` | `chatHub.handleWebSocket()` | Handshake (Token/PIN) | WebSocket hub for real-time disposable room communication, typing indicators, and presence. |
 | `/api/register-visitor` | `POST` | `_handleRegisterVisitor()` | No | Increments total unique visitor counters in `statsProvider`. |
@@ -195,7 +195,7 @@ To run reliably on memory-constrained mobile devices, CloudPocket strictly avoid
 
 ### 4.1 Zero-Buffer Upload Streaming (`UploadHandler`)
 
-The upload pipeline in [`lib/server/upload_handler.dart`](file:///f:/Project/CloudPocket/lib/server/upload_handler.dart) enforces zero-buffer disk writes:
+The upload pipeline in [`lib/server/upload_handler.dart`](../lib/server/upload_handler.dart) enforces zero-buffer disk writes:
 1. **Filename Sanitization**: Reads `X-Filename` header, URL-decodes it, and passes it through `p.basename(decoded)` to strip directory traversal sequences (e.g. `../../`). If empty or missing, defaults to `upload_<timestamp>.bin`.
 2. **Collision Resolution**: Checks if the target file already exists in the save directory. Appends incremental numerical suffixes: `file (1).ext`, `file (2).ext`.
 3. **Streaming Write**: Opens an `IOSink` directly on the target file. Pipes the incoming `request.read()` `Stream<List<int>>` into the sink.
@@ -207,7 +207,7 @@ The upload pipeline in [`lib/server/upload_handler.dart`](file:///f:/Project/Clo
 
 ### 4.2 Byte-Range Downloads & Vault Mode (`FileHandler` & `VaultTracker`)
 
-File downloads in [`lib/server/file_handler.dart`](file:///f:/Project/CloudPocket/lib/server/file_handler.dart) support resumption and media seeking:
+File downloads in [`lib/server/file_handler.dart`](../lib/server/file_handler.dart) support resumption and media seeking:
 1. **HTTP Range Support**: Parses `Range: bytes=start-end`. Returns HTTP 206 `Partial Content` with `Content-Range: bytes start-end/total` headers, streaming only the requested byte slice via `file.openRead(start, end + 1)`.
 2. **Vault Mode Decrement**: If `isVaultMode` is enabled on `ShareSession`, `VaultTracker` tracks download counts per file. When a full download completes (or starts), the remaining download count decrements. Once the download ceiling is reached:
    - Subsequent requests for the file return `HTTP 410 Gone`.
@@ -215,14 +215,14 @@ File downloads in [`lib/server/file_handler.dart`](file:///f:/Project/CloudPocke
 
 ### 4.3 On-The-Fly ZIP Streaming (`ZipStreamer`)
 
-`StreamingZipArchive` in [`lib/server/zip_streamer.dart`](file:///f:/Project/CloudPocket/lib/server/zip_streamer.dart) implements dynamic multi-file archive generation:
+`StreamingZipArchive` in [`lib/server/zip_streamer.dart`](../lib/server/zip_streamer.dart) implements dynamic multi-file archive generation:
 - Streams standard ZIP local file headers, uncompressed/deflated data descriptors, and central directory records directly into the HTTP response stream without creating an intermediate ZIP file on disk.
 
 ---
 
 ## 5. Remote Public Tunneling Engine
 
-CloudPocket provides remote public access through six tunneling options managed by `TunnelManager` ([`lib/tunnel/tunnel_manager.dart`](file:///f:/Project/CloudPocket/lib/tunnel/tunnel_manager.dart)).
+CloudPocket provides remote public access through six tunneling options managed by `TunnelManager` ([`lib/tunnel/tunnel_manager.dart`](../lib/tunnel/tunnel_manager.dart)).
 
 ```mermaid
 graph TD
@@ -258,7 +258,7 @@ graph TD
 
 ### 5.2 LocalTunnel (`loca.lt`)
 
-Implemented in pure Dart ([`lib/tunnel/localtunnel_client.dart`](file:///f:/Project/CloudPocket/lib/tunnel/localtunnel_client.dart)) with zero native binaries:
+Implemented in pure Dart ([`lib/tunnel/localtunnel_client.dart`](../lib/tunnel/localtunnel_client.dart)) with zero native binaries:
 1. Requests tunnel allocation via `GET https://loca.lt/?new`.
 2. Parses assigned URL (`https://<subdomain>.loca.lt`) and remote port.
 3. Spawns a pool of multiplexed TCP sockets connecting to `loca.lt:<remotePort>`.
@@ -266,7 +266,7 @@ Implemented in pure Dart ([`lib/tunnel/localtunnel_client.dart`](file:///f:/Proj
 
 ### 5.3 Bore & Custom Bore VPS (`bore.pub`)
 
-Implemented in pure Dart ([`lib/tunnel/bore_client.dart`](file:///f:/Project/CloudPocket/lib/tunnel/bore_client.dart)):
+Implemented in pure Dart ([`lib/tunnel/bore_client.dart`](../lib/tunnel/bore_client.dart)):
 1. Opens a raw TCP socket to `bore.pub:7835` (or custom host).
 2. Sends a null-delimited or newline-delimited JSON control frame: `{"Hello": 0}` (request random port) or `{"Hello": <desiredPort>}`.
 3. Server responds with assigned port (`{"Ack": <port>}`).
@@ -363,7 +363,7 @@ To eliminate the need to type long URLs on mobile:
 
 ## 7. Native Android Integration & Background Execution
 
-Android platform interactions are handled in [`android/app/src/main/kotlin/com/cloudpocket/app/cloud_pocket/MainActivity.kt`](file:///f:/Project/CloudPocket/android/app/src/main/kotlin/com/cloudpocket/app/cloud_pocket/MainActivity.kt).
+Android platform interactions are handled in [`android/app/src/main/kotlin/com/cloudpocket/app/cloud_pocket/MainActivity.kt`](../android/app/src/main/kotlin/com/cloudpocket/app/cloud_pocket/MainActivity.kt).
 
 ### 7.1 MethodChannels
 

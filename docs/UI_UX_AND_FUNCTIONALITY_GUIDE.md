@@ -1,6 +1,6 @@
 # CloudPocket: Comprehensive UI/UX & Functional Evolution Guide (Old App vs. New App)
 
-This document provides the authoritative, technical, and architectural reference detailing the comprehensive functional and design transformation of **CloudPocket** (v1.5.0+1). It contrasts the legacy **Material 3 / Android Holo** developer implementation with the modern **Apple Human Interface Guidelines (HIG)** consumer design system.
+This document provides the authoritative, technical, and architectural reference detailing the comprehensive functional and design transformation of **CloudPocket**. It contrasts the legacy **Material 3 / Android Holo** developer implementation with the modern **Apple Human Interface Guidelines (HIG)** consumer design system.
 
 ---
 
@@ -88,7 +88,7 @@ flowchart LR
 
 ### 3.1 Design Tokens & Visual Hierarchy
 The redesigned CloudPocket strictly complies with the **Apple Human Interface Guidelines (HIG)**:
-- **Dual Adaptive Themes** ([`theme.dart`](file:///f:/Project/CloudPocket/lib/ui/theme.dart)):
+- **Dual Adaptive Themes** ([`theme.dart`](../lib/ui/theme.dart)):
   - **Light Mode**: Canvas `#F2F2F7`, Card `#FFFFFF`, Label `#000000`, Label2 `#6C6C70`, Hairline Sep `rgba(60,60,67,0.18)`, Fill `rgba(120,120,128,0.12)`.
   - **Dark Mode**: Canvas `#000000`, Elevated Cards `#1C1C1E`, Label `#FFFFFF`, Label2 `#9A9AA1`, Hairline Sep `rgba(84,84,88,0.55)`, Fill `rgba(120,120,128,0.24)`.
   - **Semantic Accents**: Blue (`#007AFF` / `#0A84FF`), Green (`#34C759` / `#30D158`), Red (`#FF3B30` / `#FF453A`), Orange (`#FF9500` / `#FF9F0A`).
@@ -131,7 +131,7 @@ The active disposable room dashboard provides a dedicated QR code and invite lin
    - Tapping this row opens the **Room Invite Sheet**.
 2. **Dedicated "Share Invite & QR Code" Action Button**:
    - Positioned directly above "Open Chat" for prominent discovery.
-3. **Room Invite Sheet ([`CpSheet`](file:///f:/Project/CloudPocket/lib/ui/widgets/cp_sheet.dart))**:
+3. **Room Invite Sheet ([`CpSheet`](../lib/ui/widgets/cp_sheet.dart))**:
    - Displays a `220dp` white rounded card encoding the full authenticated room link: `http://<address>/room?token=<inviteToken>&pin=<pin>`.
    - **"Share invite link"**: Opens the native share sheet with complete room credentials and deep link for messaging apps (WhatsApp, Telegram, Slack).
    - **"Copy link"**: Places the full room URL onto the clipboard.
@@ -173,7 +173,7 @@ sequenceDiagram
 - **Native Watchdog**: Uses `AlarmManager.setExactAndAllowWhileIdle` every 5 minutes (with graceful fallback to `setAndAllowWhileIdle` if exact alarms are denied) to resurrect the service if terminated by aggressive OEM memory cleaners.
 - **Broadcast Receivers**: Registered `BackgroundWatchdogReceiver` for `BOOT_COMPLETED`, `MY_PACKAGE_REPLACED`, and `ACTION_WATCHDOG_PING`. It verifies the persisted `keepRunning` preference before re-arming.
 - **In-Process 30s Heartbeat**: Probes local HTTP port reachability every 30 seconds. If unreachable, attempts automatic restart with exponential backoff (capped at 60s). Automatically reconnects tunnels on network interface change.
-- **OEM Package Visibility**: Declared `<queries>` in [`AndroidManifest.xml`](file:///f:/Project/CloudPocket/android/app/src/main/AndroidManifest.xml) for Xiaomi MIUI/HyperOS, Oppo/Realme ColorOS, Vivo/iQOO, Huawei/Honor EMUI, and Samsung OneUI.
+- **OEM Package Visibility**: Declared `<queries>` in [`AndroidManifest.xml`](../android/app/src/main/AndroidManifest.xml) for Xiaomi MIUI/HyperOS, Oppo/Realme ColorOS, Vivo/iQOO, Huawei/Honor EMUI, and Samsung OneUI.
 
 ---
 
@@ -218,7 +218,7 @@ classDiagram
     CpFieldGroup *-- CpFieldItem
 ```
 
-Both **Custom Bore VPS Relay** and **Cloudflare Custom Domain** dialogs were completely rebuilt on a unified component base ([`cp_sheet.dart`](file:///f:/Project/CloudPocket/lib/ui/widgets/cp_sheet.dart)):
+Both **Custom Bore VPS Relay** and **Cloudflare Custom Domain** dialogs were completely rebuilt on a unified component base ([`cp_sheet.dart`](../lib/ui/widgets/cp_sheet.dart)):
 1. **Zero Keyboard Overflow**: Wrapped in `SingleChildScrollView` with `bottom: viewInsets.bottom`, `isScrollControlled: true`, and `useSafeArea: true`. Tested cleanly at 360dp width and 1.3 font scale with virtual keyboard open.
 2. **Standardized Header**: 30dp squircle colored icon tile + 22sp bold title + 30dp circular fill close button.
 3. **No Floating Labels**: Replaced floating label text with clean, persistent hint text inside 52dp inset rows.
@@ -246,11 +246,6 @@ Both **Custom Bore VPS Relay** and **Cloudflare Custom Domain** dialogs were com
 
 ---
 
-## 8. Verification & Engineering Compliance
+## Verification
 
-- **Rule 1 (APK Authorization)**: `flutter build apk --release` is strictly executed only upon explicit user command.
-- **Rule 2 (Zero Unsolicited Touch)**: Core Shelf server engine, file streaming, range requests, PointyCastle AES-256-GCM cryptography, and tunnel protocols were preserved without regression.
-- **Rule 3 (Zero Memory Buffering)**: File transfers stream directly via `request.read() -> IOSink`.
-- **Static Analysis**: `flutter analyze` reports **0 issues**.
-- **Automated Test Suite**: **160 tests pass** across 33 test files (`flutter test`).
-- **Production Build Artifact**: Assembled release APK at [`build/app/outputs/flutter-apk/app-release.apk`](file:///f:/Project/CloudPocket/build/app/outputs/flutter-apk/app-release.apk) (31.7 MB).
+[Automated checks](https://github.com/madebyarjun/CloudPocket/actions/workflows/checks.yml) · [Published APKs and device checks](RELEASE.md)

@@ -25,7 +25,7 @@ Reviewed on 28 October 2026 using an existing Pixel 5 API 32 x86_64 emulator and
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-01-launch.png)
+[Open screenshot](screenshots/native-01-launch.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -39,7 +39,7 @@ Evidence: Native emulator.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/02-home-send.png)
+[Open screenshot](screenshots/02-home-send.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -59,7 +59,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/03-home-receive.png)
+[Open screenshot](screenshots/03-home-receive.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -73,7 +73,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/04-home-room.png)
+[Open screenshot](screenshots/04-home-room.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -86,7 +86,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-16-file-selector.png)
+[Open screenshot](screenshots/native-16-file-selector.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -102,7 +102,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-37-receive-live.png)
+[Open screenshot](screenshots/native-37-receive-live.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -121,7 +121,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-41-fullscreen-qr.png)
+[Open screenshot](screenshots/native-41-fullscreen-qr.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -133,7 +133,7 @@ Evidence: Native emulator.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/16-tunnel-error.png)
+[Open screenshot](screenshots/16-tunnel-error.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -145,7 +145,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-38-received-file.png)
+[Open screenshot](screenshots/native-38-received-file.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -161,7 +161,7 @@ Evidence: Native emulator.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/06-transfers.png)
+[Open screenshot](screenshots/06-transfers.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -173,7 +173,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-44-transfer-active.png)
+[Open screenshot](screenshots/native-44-transfer-active.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -188,7 +188,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-46-pause-verified.png)
+[Open screenshot](screenshots/native-46-pause-verified.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -199,7 +199,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-47-transfer-cancelled.png)
+[Open screenshot](screenshots/native-47-transfer-cancelled.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -211,7 +211,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-05-history.png)
+[Open screenshot](screenshots/native-05-history.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -224,7 +224,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-06-settings-top.png)
+[Open screenshot](screenshots/native-06-settings-top.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -238,7 +238,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-07-device-name.png)
+[Open screenshot](screenshots/native-07-device-name.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -249,7 +249,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-09-settings-bottom.png)
+[Open screenshot](screenshots/native-09-settings-bottom.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -266,7 +266,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-10-system-logs.png)
+[Open screenshot](screenshots/native-10-system-logs.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -279,7 +279,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator, after fix.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-53-cloudflare-fixed.png)
+[Open screenshot](screenshots/native-53-cloudflare-fixed.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -294,7 +294,7 @@ Evidence: Native emulator, after fix.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/21-bore-setup.png)
+[Open screenshot](screenshots/21-bore-setup.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -308,7 +308,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-13-api-guide.png)
+[Open screenshot](screenshots/native-13-api-guide.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -321,7 +321,7 @@ Evidence: Native emulator.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/11-room-host.png)
+[Open screenshot](screenshots/11-room-host.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -339,7 +339,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-24-timer.png)
+[Open screenshot](screenshots/native-24-timer.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -351,7 +351,7 @@ Evidence: Native emulator.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-26-pin-sheet.png)
+[Open screenshot](screenshots/native-26-pin-sheet.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -363,7 +363,7 @@ Evidence: Native emulator.
 
 Evidence: Flutter-rendered fixture.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/12-room-join.png)
+[Open screenshot](screenshots/12-room-join.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -378,7 +378,7 @@ Evidence: Flutter-rendered fixture.
 
 Evidence: Native emulator.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/native-30-camera.png)
+[Open screenshot](screenshots/native-30-camera.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -392,7 +392,7 @@ Evidence: Native emulator.
 
 Evidence: Flutter-rendered fixture; synthetic credentials.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/17-room-live.png)
+[Open screenshot](screenshots/17-room-live.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -409,7 +409,7 @@ Evidence: Flutter-rendered fixture; synthetic credentials.
 
 Evidence: Flutter-rendered live local WebSocket test.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/24-room-chat.png)
+[Open screenshot](screenshots/24-room-chat.png)
 
 | Element | Purpose / behavior |
 | --- | --- |
@@ -424,7 +424,7 @@ Evidence: Flutter-rendered live local WebSocket test.
 
 Evidence: Flutter-rendered fixture; Android capture guard retained.
 
-[Open screenshot](D:/AntiGravity/CloudPocket/docs/ui-review/screenshots/23-media-text.png)
+[Open screenshot](screenshots/23-media-text.png)
 
 | Element | Purpose / behavior |
 | --- | --- |

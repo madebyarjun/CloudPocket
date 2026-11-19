@@ -3,7 +3,7 @@
 ![Receive Mode Screenshot](../screenshots/03_receive_mode.jpg)
 
 ## 1. Overview & Architectural Role
-**Receive Mode** ([`SessionNotifier.setIsReceiveMode(true)`](file:///f:/Project/CloudPocket/lib/providers/session_provider.dart#L100)) transforms CloudPocket into a high-capacity incoming file ingestion station. 
+**Receive Mode** ([`SessionNotifier.setIsReceiveMode(true)`](../../lib/providers/session_provider.dart)) transforms CloudPocket into a high-capacity incoming file ingestion station. 
 
 Unlike traditional file-sharing utilities where receiving files requires reciprocal app installations, CloudPocket turns the host Android phone into a high-speed HTTP upload server. Any phone, laptop, desktop, or tablet on the same Wi-Fi network (or anywhere in the world via Cloudflare tunnel) can navigate to the portal and upload files directly into the host's download storage without installing any software.
 

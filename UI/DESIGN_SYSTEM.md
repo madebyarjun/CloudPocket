@@ -12,7 +12,7 @@ The visual design language is anchored in three core principles:
 
 ## 2. Color Palette & Semantic Tokens
 
-CloudPocket utilizes Material Design 3 dynamic tokens extended with semantic status colors via [`CloudPocketColors`](file:///f:/Project/CloudPocket/lib/ui/theme.dart#L5-L85):
+CloudPocket utilizes Material Design 3 dynamic tokens extended with semantic status colors via [`CloudPocketColors`](../lib/ui/theme.dart):
 
 ```
 +-------------------------------------------------------------------------+
@@ -52,7 +52,7 @@ CloudPocket enforces clean, geometric typography with generous line-heights and 
 
 ## 4. Navigation Architecture & Curved Nav Bar Physics
 
-CloudPocket uses a custom animated curved bottom navigation bar ([`SmoothCurvedNavBar`](file:///f:/Project/CloudPocket/lib/ui/widgets/smooth_curved_nav_bar.dart) and [`AppShell`](file:///f:/Project/CloudPocket/lib/ui/app_shell.dart)):
+CloudPocket uses a custom animated curved bottom navigation bar ([`SmoothCurvedNavBar`](../lib/ui/widgets/smooth_curved_nav_bar.dart) and [`AppShell`](../lib/ui/app_shell.dart)):
 
 ```mermaid
 graph LR
@@ -65,7 +65,7 @@ graph LR
 ### Motion & Physics
 1. **Curved Bezier Notch**: As the user switches tabs, a smooth cubic Bezier notch travels horizontally along the navigation bar, seamlessly nestling under the active tab icon.
 2. **Elevated Floating Active Button**: The selected tab icon rises slightly into an elevated circular bubble glowing with the primary accent color (`#00B0FF`).
-3. **Continuous Drag / Swipe Switching**: In addition to tapping tab icons, users can drag their finger horizontally across the bottom bar ([`_onBarDrag`](file:///f:/Project/CloudPocket/lib/ui/app_shell.dart#L100)) to scrub smoothly between tabs, with selection haptic clicks firing at each tab boundary.
+3. **Continuous Drag / Swipe Switching**: In addition to tapping tab icons, users can drag their finger horizontally across the bottom bar ([`_onBarDrag`](../lib/ui/app_shell.dart)) to scrub smoothly between tabs, with selection haptic clicks firing at each tab boundary.
 4. **Smooth Page Crossfade**: Tab transitions employ a coordinated dual-curve crossfade: the leaving tab fades out along `Interval(0.0, 0.45, Curves.easeIn)` while the entering tab fades in along `Interval(0.4, 1.0, Curves.easeOut)`.
 
 ---
@@ -84,7 +84,7 @@ When hosting Disposable Rooms:
 - Tapping **"Terminate & Shred Room Now"** invokes `DisposableRoom.dispose()`, wiping the in-memory chat list and deleting temporary decrypt caches immediately.
 
 ### 5.3 Hardware `FLAG_SECURE` Countermeasure
-When opening confidential media in [`RoomMediaViewerScreen`](file:///f:/Project/CloudPocket/lib/ui/widgets/room_media_viewer.dart):
+When opening confidential media in [`RoomMediaViewerScreen`](../lib/ui/widgets/room_media_viewer.dart):
 - `window.setFlags(FLAG_SECURE, FLAG_SECURE)` hardware-locks the Android display pipeline.
 - Screenshot captures and screen recording apps capture only black screens.
 - Recents app-switcher cards are replaced with privacy blanks.

@@ -3,7 +3,7 @@
 ![Received Files Tab Screenshot](../screenshots/05_received_files_tab.jpg)
 
 ## 1. Overview & Architectural Role
-The **Received Files Manager** ([`ReceivedFilesTab`](file:///f:/Project/CloudPocket/lib/ui/screens/received_files_tab.dart#L20-L750)) is the dedicated file repository tab in the navigation bar. Whenever external users upload files through the web portal (whether in local Wi-Fi Receive Mode or via Cloudflare quick tunnel), the files are ingested into the device's storage directory (`/Download/CloudPocket/`) and immediately indexed here.
+The **Received Files Manager** ([`ReceivedFilesTab`](../../lib/ui/screens/received_files_tab.dart)) is the dedicated file repository tab in the navigation bar. Whenever external users upload files through the web portal (whether in local Wi-Fi Receive Mode or via Cloudflare quick tunnel), the files are ingested into the device's storage directory (`/Download/CloudPocket/`) and immediately indexed here.
 
 This screen provides complete management capabilities: visual file previews, thumbnail generation, category filtering, search, native viewing, external sharing, and batch deletion.
 
@@ -33,7 +33,7 @@ Interactive horizontal filter pills with live item count badges:
 ### 2.4 File Item Anatomy (List & Grid Layouts)
 Each file card contains:
 1. **Interactive Thumbnail**:
-   - For images and videos, generated asynchronously on a background isolate via [`ThumbnailService`](file:///f:/Project/CloudPocket/lib/server/thumbnail_service.dart) and cached on disk.
+   - For images and videos, generated asynchronously on a background isolate via [`ThumbnailService`](../../lib/server/thumbnail_service.dart) and cached on disk.
    - For documents, audio, and archives, displays high-contrast custom vector glyphs.
 2. **Metadata Cluster**:
    - Primary line: File name with extension.

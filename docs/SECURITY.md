@@ -1,6 +1,6 @@
 # CloudPocket — Security Architecture & Threat Model
 
-This document outlines the security boundaries, cryptographic specifications, authentication flows, data storage mechanisms, and verified security properties of **CloudPocket** (v1.5.0+1).
+This document outlines the security boundaries, cryptographic specifications, authentication flows, data storage mechanisms, and verified security properties of **CloudPocket**.
 
 ---
 

@@ -3,7 +3,7 @@
 ![Settings & OEM Suite Screenshot](../screenshots/09_settings_and_oem.jpg)
 
 ## 1. Overview & Architectural Role
-The **Settings & OEM Suite** ([`SettingsTab`](file:///f:/Project/CloudPocket/lib/ui/screens/settings_tab.dart#L25-L650)) is the fifth tab in the navigation bar. It houses server identity configurations, networking preferences, battery optimization overrides, OEM-specific task kill prevention guides, and diagnostic utilities.
+The **Settings & OEM Suite** ([`SettingsTab`](../../lib/ui/screens/settings_tab.dart)) is the fifth tab in the navigation bar. It houses server identity configurations, networking preferences, battery optimization overrides, OEM-specific task kill prevention guides, and diagnostic utilities.
 
 Because Android vendors aggressively kill background processes and close open server sockets when the phone screen turns off, this screen features specialized OEM integration to keep CloudPocket running uninterrupted.
 
@@ -30,7 +30,7 @@ Mobile operating systems employ aggressive low-power daemons that sever active W
    - Toggles Android Foreground Service (`flutter_foreground_task`) with persistent notification.
    - Automatically acquires `PARTIAL_WAKE_LOCK`, `WIFI_MODE_FULL_HIGH_PERF`, and `MulticastLock`.
 2. **OEM-Specific Bypass Cards**:
-   CloudPocket provides customized guidance cards that launch directly into manufacturer-specific settings screens via native Android intents in [`MainActivity.kt`](file:///f:/Project/CloudPocket/android/app/src/main/kotlin/com/cloudpocket/app/cloud_pocket/MainActivity.kt):
+   CloudPocket provides customized guidance cards that launch directly into manufacturer-specific settings screens via native Android intents in [`MainActivity.kt`](../../android/app/src/main/kotlin/com/cloudpocket/app/cloud_pocket/MainActivity.kt):
    - **Xiaomi / Redmi / POCO (MIUI / HyperOS)**: Auto-start permission intent (`com.miui.securitycenter`).
    - **Samsung (One UI)**: App Battery Usage -> *"Unrestricted"* intent.
    - **Oppo / Realme / OnePlus (ColorOS / OxygenOS)**: Allow Background Activity intent.
@@ -38,8 +38,7 @@ Mobile operating systems employ aggressive low-power daemons that sever active W
    - **Huawei / Honor (EMUI)**: App Launch -> *"Manage Manually"* intent.
 
 ### 2.4 Diagnostics & Secret Log Viewer
-- **Footnote**: Displays app version (`v1.5.0+1`), Dart SDK, and build architecture (`arm64-v8a`).
-- **Secret Easter Egg UX**: Tapping the Settings icon 6 times in rapid succession triggers a medium haptic pulse and summons [`LogViewerDialog`](file:///f:/Project/CloudPocket/lib/ui/widgets/log_viewer_dialog.dart). This dialog displays a live in-memory terminal buffer of all Shelf server requests, tunnel connection logs, DNS lookups, and crypto events without writing secrets to persistent log files.
+- **Secret Easter Egg UX**: Tapping the Settings icon 6 times in rapid succession triggers a medium haptic pulse and summons [`LogViewerDialog`](../../lib/ui/widgets/log_viewer_dialog.dart). This dialog displays a live in-memory terminal buffer of all Shelf server requests, tunnel connection logs, DNS lookups, and crypto events without writing secrets to persistent log files.
 
 ---
 

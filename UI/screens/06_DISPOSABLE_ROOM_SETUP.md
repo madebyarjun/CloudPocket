@@ -3,7 +3,7 @@
 ![Disposable Room Setup Screenshot](../screenshots/06_disposable_room_setup.jpg)
 
 ## 1. Overview & Architectural Role
-The **Disposable Chat Room Setup & Live Hub** ([`DisposableRoomSetupScreen`](file:///f:/Project/CloudPocket/lib/ui/screens/disposable_room_setup_screen.dart) and [`DisposableRoomLiveView`](file:///f:/Project/CloudPocket/lib/ui/screens/disposable_room_live_view.dart)) delivers an ephemeral, privacy-first peer-to-peer communication experience.
+The **Disposable Chat Room Setup & Live Hub** ([`DisposableRoomSetupScreen`](../../lib/ui/screens/disposable_room_setup_screen.dart) and [`DisposableRoomLiveView`](../../lib/ui/screens/disposable_room_live_view.dart)) delivers an ephemeral, privacy-first peer-to-peer communication experience.
 
 Disposable Rooms are designed for zero-trace file and text exchange. Unlike standard messaging platforms that store conversations indefinitely in the cloud or phone databases, CloudPocket's Disposable Room operates **strictly in RAM inside `ChatHub`**. Nothing is ever committed to SQLite, `SharedPreferences`, or device flash storage. When the room expires or the user taps "Terminate", the chat messages vanish completely.
 
@@ -38,7 +38,7 @@ The setup screen features two distinct operating tabs:
 - **Dynamic 6-Character Discovery Code**:
   - CloudPocket supports ephemeral room discovery via lightweight `ntfy.sh` topics using 6-character codes (e.g., `NX-7204`).
   - Entering this code automatically resolves the host's tunnel URL without requiring manual typing of long URLs.
-- **Camera QR Scanner Button**: Launches [`QrScannerSheet`](file:///f:/Project/CloudPocket/lib/ui/widgets/qr_scanner_sheet.dart) with a live camera viewfinder and corner target reticle to decode room URLs and embedded PINs instantly.
+- **Camera QR Scanner Button**: Launches [`QrScannerSheet`](../../lib/ui/widgets/qr_scanner_sheet.dart) with a live camera viewfinder and corner target reticle to decode room URLs and embedded PINs instantly.
 - **Clipboard Auto-Detection**: Automatically detects any copied CloudPocket room URL on the system clipboard and pre-fills the input field.
 
 ---
@@ -54,7 +54,7 @@ Once a room is active, the host is presented with a cyberpunk-inspired security 
 3. **Connected Peers List**:
    - Real-time roster showing connected clients (e.g., `Host (You)`, `Safari / iPhone 15`, `Chrome / MacBook`).
 4. **Primary CTAs**:
-   - **Enter Live Chat**: Navigates to [`RoomChatScreen`](file:///f:/Project/CloudPocket/lib/ui/screens/room_chat_screen.dart).
+   - **Enter Live Chat**: Navigates to [`RoomChatScreen`](../../lib/ui/screens/room_chat_screen.dart).
    - **Terminate & Shred Room Now**: Red button that triggers immediate teardown, unlinks the temporary cache directory (`cache/disposable_room/`), and wipes the RAM message buffer.
 
 ---
