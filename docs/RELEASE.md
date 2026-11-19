@@ -1,30 +1,21 @@
 # Release gates — GitHub first, Google Play later
 
-Updated 2026-10-28. This is an engineering checklist, not a claim of production certification.
+## Published Android packages
 
-## 1.0.1 Android packages
+GitHub release v1.0.2 contains separate ARM64 and ARMv7 APKs for Android 8.0+. Both passed Android SDK `apksigner verify --print-certs`. Their SHA-256 file hashes match the assets published on GitHub. The signing certificate subject is `CN=CloudPocket` and its SHA-256 fingerprint is `498ac15c9ed146ff74e0671750f5c0579b9c2eabf10426c9fae99a32fe31f34e`.
 
-The Android release build supports separate armeabi-v7a and arm64-v8a packages. Configure the existing private release key in android/key.properties, then run the split build command in the README. Verify each APK with apksigner before uploading.
+| Architecture | APK SHA-256 |
+| --- | --- |
+| arm64-v8a | `c60342ae722c983534af6d28005321ba8d570f114032577566735cd0d890a429` |
+| armeabi-v7a | `874c93005e6d35ef15d4284b56137a5ba192e0c66b53950dbb1bcdff1f6ed966` |
 
-The bundled 32-bit tunnel executable comes from the upstream [cloudflared 2026.8.3 release](https://github.com/cloudflare/cloudflared/releases/tag/2026.8.3), asset cloudflared-linux-arm, SHA-256 7a7cac4ad4561ff55797eaf27aae1a0be37498c85502715bc87e3bad919d928c. Physical-device tunnel and NFC checks are outstanding.
-## Current verification
+v1.0.0 was a debug-signed test release. v1.0.1 introduced the release key used for v1.0.2. Preserve the private keystore and its backup for updates. Configure signing locally in `android/key.properties`. [Release downloads](https://github.com/madebyarjun/CloudPocket/releases) · [Version history](../CHANGELOG.md)
 
-- Flutter 3.13.9 / Dart 3.1.5: analyzer reports no issues.
-- 199 Flutter tests pass, including nine new production boundary tests.
-- Six Node browser unit tests cover theme mode, cancellation, terminal HTTP errors, failed-batch state, accessibility selection and local-only plaintext fallback.
-- Android debug installation and launch succeeded on Pixel 5 API 32 x86_64 emulator.
-- Latest web pages have not been visually approved: the browser origin permission gate still denies loopback access. `node tool/web_preview.cjs` serves synthetic preview data at loopback port 18080; it is not a production server or a functional room fixture.
-- No production-key-signed release has been built or published. A release-mode ARM64 test APK can be built using the existing local Android test key as described below.
+## Device verification
 
-## GitHub release blockers
+A maintainer-supplied Android log shows Quick Tunnel allocation followed by a refused edge-discovery DNS lookup with hotspot off. A subsequent attempt registered over HTTP/2 with hotspot enabled. This establishes connector registration on that phone. Remote file delivery, hotspot-off reliability, two-phone NFC, locked-screen transfers, ARMv7 runtime behavior, and clean-install/upgrade testing remain open. CI covers analysis and automated tests.
 
-1. Complete browser visual review on mobile and desktop, light/dark, Send/Receive, password gate, folder/list/grid, preview/download dialogs, join/chat/ended states. Test real HTTP and HTTPS endpoints; the synthetic preview does not supply WebSockets.
-2. Test the release on physical ARM64 hardware: Cloudflare process, provider failover, hotspot switching, background/locked screen transfers, notification denial, battery restrictions, camera, media viewer, room expiry and reconnect. The x86 emulator cannot validate the ARM64 tunnel binary.
-3. Configure a stable private release signing key and retain a secure backup. `android/key.properties` must contain storeFile, storePassword, keyAlias and keyPassword. The Gradle production release guard refuses missing signing configuration. The explicit CLOUDPOCKET_LOCAL_TEST_RELEASE=1 environment option selects the existing Android debug key for a local release-mode test package only; it does not create a production signing identity.
-4. Before publishing, review dependency/native-binary provenance, licenses, bundled cloudflared version, third-party service terms, final privacy notice and a maintainer contact. These have not been independently audited.
-5. Authorize the release build explicitly, then verify signing certificate, ARM64 ABI, clean-install and upgrade paths. Publish the signed APK with its SHA-256 checksum and accurate release notes. Never publish a debug APK as the production package.
-6. Stress-test real large transfers on low-memory devices, simultaneous sessions, low disk, network interruption and host termination. Existing streaming tests do not prove reliability on every device.
-7. Verify the vault request policy on real browsers: the first admitted file response consumes access, including range requests and interrupted downloads. ZIP files reserve their entries together. Vault cards download directly and do not preload video ranges. This limits server access; it cannot prevent a recipient copying received content.
+Before the next release, exercise these paths on physical hardware and record the device, Android version, APK architecture and outcome. Also check camera scanning, room expiry, reconnect, and interrupted file transfers. Use each architecture's bundled cloudflared executable.
 
 ## Google Play migration
 

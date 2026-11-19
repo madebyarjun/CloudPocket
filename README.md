@@ -2,9 +2,28 @@
 
 Share files directly from your Android phone over Wi-Fi, a hotspot, or an optional public tunnel. Recipients open a link in their browser; temporary rooms add chat and media sharing.
 
-**Version:** 1.0.2+3 · **Primary platform:** Android 8.0+ · **Status:** Release candidate
+[![Download latest APK](https://img.shields.io/badge/Download_latest_APK-Android-167548)](https://github.com/madebyarjun/CloudPocket/releases/latest)
+[![Flutter checks](https://github.com/madebyarjun/CloudPocket/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/madebyarjun/CloudPocket/actions/workflows/checks.yml)
 
-Device testing and release gates remain outstanding. See [release readiness](docs/RELEASE.md) before distributing a production package.
+<img src="docs/ui-review/screenshots/native-55-final-idle-home.png" width="200" alt="Android home screen"> <img src="docs/ui-review/screenshots/24-room-chat.png" width="200" alt="Disposable chat room"> <img src="docs/media/receive-demo.gif" width="200" alt="Animated walkthrough from Receive mode to completed transfer">
+
+[Watch the one-minute browser tour (WebM, sample files)](docs/media/browser-tour.webm)
+
+## Install on Android
+
+1. Open the download badge above and expand **Assets**. Android 8.0 or later is required.
+2. Choose **arm64-v8a** for most modern phones. Choose **armeabi-v7a** for older phones running 32-bit Android.
+3. Tap the downloaded APK. If Android prompts you, allow this browser or file manager to install unknown apps, then tap **Install**. You can revoke that permission afterward.
+
+**Published release:** v1.0.2. Both APKs are release-signed. The first v1.0.0 test APK used a different key. Moving from that version may require uninstalling it, which can erase its local data. [Release verification](docs/RELEASE.md) · [Changelog](CHANGELOG.md)
+
+## Why I built this
+
+I wanted to hand someone a file from my phone and have them open it in their browser. CloudPocket lets the phone host that exchange directly. For a short conversation around the files, the same phone can host a temporary room.
+
+## Known limitations
+
+Local file sharing and Bore use plain HTTP. Use a trusted network for local sessions. Browser attachments can be captured or copied. On one Android device, Cloudflare Quick Tunnel registered with the hotspot enabled after edge DNS lookup failed with it off. Two-phone NFC and locked-screen transfers still need physical verification. [Security details](docs/SECURITY.md)
 
 ## Features
 
@@ -38,7 +57,7 @@ This branch uses:
 | Node.js | 18+ for browser unit tests |
 | Android release architecture | ARM64 (`arm64-v8a`) and ARMv7 (`armeabi-v7a`) |
 
-From the project root:
+Install Git LFS and run `git lfs pull` after cloning to fetch both ARM tunnel executables. From the project root:
 
 ```powershell
 flutter pub get
@@ -69,7 +88,7 @@ On Windows, the combined check script also validates JavaScript syntax:
 ./tool/check.ps1 -FlutterRoot <path-to-Flutter-3.13.9>
 ```
 
-These checks do not build an APK. APK builds require explicit authorization under the repository's engineering rules. Production signing requires private configuration in `android/key.properties`; never commit signing keys or credentials. See [testing](docs/TESTING.md) and [release gates](docs/RELEASE.md) for device checks and publishing requirements.
+Production signing requires private configuration in `android/key.properties`; never commit signing keys or credentials. See [testing](docs/TESTING.md) and [release gates](docs/RELEASE.md) for device checks and publishing requirements.
 
 ## Security and privacy
 
@@ -80,6 +99,16 @@ These checks do not build an APK. APK builds require explicit authorization unde
 - Public Chat ID discovery uses `ntfy.sh`, requires a PIN, and does not publish the invite token. Discovery topics are public and do not authenticate room ownership.
 
 Read the [security model](docs/SECURITY.md) and [privacy disclosure](docs/PRIVACY.md) before sharing sensitive content.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[Android phone] --> B[Embedded Shelf server]
+    B -->|Local Wi-Fi or hotspot| D[Recipient browser]
+    B -->|Public session| C[Tunnel relay]
+    C --> D
+```
 
 ## Project structure
 
@@ -98,6 +127,7 @@ docs/             Architecture, security, testing, and release guidance
 
 ## Documentation and contributing
 
+- [Contributing](CONTRIBUTING.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Testing guide](docs/TESTING.md)
 - [Release readiness](docs/RELEASE.md)
@@ -109,4 +139,3 @@ Keep contributions limited to the requested feature or fix, preserve streaming f
 ## License
 
 [MIT](LICENSE) - Copyright (c) 2026 madebyarjun. Third-party dependencies and bundled binaries retain their respective licenses.
-
