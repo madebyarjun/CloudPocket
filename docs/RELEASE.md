@@ -2,12 +2,12 @@
 
 ## Published Android packages
 
-GitHub release v1.0.3 contains separate ARM64 and ARMv7 APKs for Android 8.0+. Both passed Android SDK `apksigner verify --print-certs`. Their SHA-256 file hashes match the assets published on GitHub. The signing certificate subject is `CN=CloudPocket` and its SHA-256 fingerprint is `498ac15c9ed146ff74e0671750f5c0579b9c2eabf10426c9fae99a32fe31f34e`.
+GitHub release v1.0.4 contains separate ARM64 and ARMv7 APKs for Android 8.0+. Both passed Android SDK `apksigner verify --print-certs`. Their SHA-256 file hashes match the assets published on GitHub. The signing certificate subject is `CN=CloudPocket` and its SHA-256 fingerprint is `498ac15c9ed146ff74e0671750f5c0579b9c2eabf10426c9fae99a32fe31f34e`.
 
 | Architecture | APK SHA-256 |
 | --- | --- |
-| arm64-v8a | `205b053466e87bb7235a1efe4400f25e9d3433d884e03b22ee4bc61a1b61641d` |
-| armeabi-v7a | `5d332bd47a8ae22b0e5ef1b20d421f2b872b1e667e4305952723de73c54d142d` |
+| arm64-v8a | `9b09f895fd0b55f8d4b0a6ffac51fda1cddd053ee8daaea5feba319403885efb` |
+| armeabi-v7a | `d524a70d011e04313749488c94483c12129cb6ac8fc9ff9f363813a85d9d2d59` |
 
 v1.0.0 was a debug-signed test release. v1.0.1 introduced the release key used for subsequent releases. Preserve the private keystore and its backup for updates. Configure signing locally in `android/key.properties`. [Release downloads](https://github.com/madebyarjun/CloudPocket/releases) · [Version history](../CHANGELOG.md)
 
@@ -19,7 +19,7 @@ Before the next release, exercise these paths on physical hardware and record th
 
 ## Google Play migration
 
-The maintenance branch targets API 36. The published v1.0.3 APKs target API 34. [Google Play target requirements](https://developer.android.com/google/play/requirements/target-sdk)
+The published v1.0.4 APKs target API 36. [Google Play target requirements](https://developer.android.com/google/play/requirements/target-sdk)
 
 Verify [16 KB page-size compatibility](https://developer.android.com/guide/practices/page-sizes) for Flutter, every native plugin and bundled cloudflared, including installation from a generated bundle. Do not infer compatibility from emulator startup.
 

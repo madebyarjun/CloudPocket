@@ -4,6 +4,7 @@
 
 - Updated the Android toolchain to Flutter 3.50 and target API 36. Both ARM architectures still support Android 8.0 and later.
 - Updated the Android tunnel executable to cloudflared 2026.11.1 and migrated sharing, file picking, notifications and secure storage to the updated plugin APIs.
+- Added swipe selection for sharing modes and room timers. Lift your finger to select an option or tap it directly.
 - Fixed ink feedback in the sharing and room setup screens after the Material upgrade.
 
 ## v1.0.3

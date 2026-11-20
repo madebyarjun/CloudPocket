@@ -465,6 +465,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
 
               // Mode Switcher: Send Files / Receive Mode / Room (.seg)
               AppleSegmentedControl<int>(
+                swipeEnabled: true,
                 margin: const EdgeInsets.only(top: 16),
                 segmentKeys: widget.modeKeys,
                 values: const [0, 1, 2],
@@ -734,6 +735,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             ),
             const SizedBox(height: 14),
             AppleSegmentedControl<int>(
+              swipeEnabled: true,
               margin: EdgeInsets.zero,
               values: const [0, 1, 2, 3, 4],
               labels: const ['5 min', '15 min', '30 min', '1 hr', '2 hr'],

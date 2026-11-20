@@ -186,7 +186,8 @@ class AppleIconTile extends StatelessWidget {
 }
 
 /// Sliding segmented control (.seg)
-class AppleSegmentedControl<T> extends StatelessWidget {
+class AppleSegmentedControl<T> extends StatefulWidget {
+  final bool swipeEnabled;
   final List<T> values;
   final Map<T, Key>? segmentKeys;
   final List<String> labels;
@@ -196,6 +197,7 @@ class AppleSegmentedControl<T> extends StatelessWidget {
 
   const AppleSegmentedControl({
     super.key,
+    this.swipeEnabled = false,
     required this.values,
     this.segmentKeys,
     required this.labels,
@@ -205,12 +207,19 @@ class AppleSegmentedControl<T> extends StatelessWidget {
   }) : assert(values.length == labels.length);
 
   @override
+  State<AppleSegmentedControl<T>> createState() => _AppleSegmentedControlState<T>();
+}
+
+class _AppleSegmentedControlState<T> extends State<AppleSegmentedControl<T>> {
+  int? _preview;
+
+  @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
-    final selectedIndex = values.indexOf(selectedValue);
+    final selectedIndex = _preview ?? widget.values.indexOf(widget.selectedValue);
 
     return Container(
-      margin: margin,
+      margin: widget.margin,
       padding: const EdgeInsets.all(3),
       height: 38,
       decoration: BoxDecoration(
@@ -220,58 +229,93 @@ class AppleSegmentedControl<T> extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final totalWidth = constraints.maxWidth;
-          final thumbWidth = totalWidth / values.length;
+          final thumbWidth = totalWidth / widget.values.length;
 
-          return Stack(
-            children: [
-              // Animated thumb
-              if (selectedIndex >= 0) AnimatedPositioned(
-                duration: const Duration(milliseconds: 500),
-                curve: appleCurve,
-                left: selectedIndex * thumbWidth,
-                top: 0,
-                bottom: 0,
-                width: thumbWidth,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: colors.thumb,
-                    borderRadius: BorderRadius.circular(CloudPocketTheme.radiusSegmentThumb),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.14),
-                        blurRadius: 7,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Buttons row
-              Row(
-                children: List.generate(values.length, (index) {
-                  return Expanded(
-                    child: GestureDetector(
-                      key: segmentKeys?[values[index]],
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => onValueChanged(values[index]),
-                      child: Center(
-                        child: Text(
-                          labels[index],
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: colors.label,
-                            fontFamilyFallback: CloudPocketTheme.fontFallbacks,
+          final rtl = Directionality.of(context) == TextDirection.rtl;
+          void preview(Offset position) {
+            final visual = (position.dx / thumbWidth).floor().clamp(0, widget.values.length - 1);
+            final index = rtl ? widget.values.length - 1 - visual : visual;
+            if (_preview != index) setState(() => _preview = index);
+          }
+
+          return Listener(
+            onPointerCancel: (_) {
+              if (_preview != null) setState(() => _preview = null);
+            },
+            child: GestureDetector(
+            excludeFromSemantics: true,
+            behavior: HitTestBehavior.opaque,
+            onHorizontalDragStart: widget.swipeEnabled ? (d) => preview(d.localPosition) : null,
+            onHorizontalDragUpdate: widget.swipeEnabled ? (d) => preview(d.localPosition) : null,
+            onHorizontalDragCancel: widget.swipeEnabled
+                ? () => setState(() => _preview = null)
+                : null,
+            onHorizontalDragEnd: widget.swipeEnabled
+                ? (_) {
+                    final index = _preview;
+                    setState(() => _preview = null);
+                    if (index != null && widget.values[index] != widget.selectedValue) {
+                      widget.onValueChanged(widget.values[index]);
+                    }
+                  }
+                : null,
+            child: Stack(
+              children: [
+                // Animated thumb
+                if (selectedIndex >= 0)
+                  AnimatedPositioned(
+                    duration: MediaQuery.disableAnimationsOf(context) || _preview != null
+                        ? Duration.zero
+                        : Duration(milliseconds: widget.swipeEnabled ? 250 : 500),
+                    curve: appleCurve,
+                    left:
+                        (rtl ? widget.values.length - 1 - selectedIndex : selectedIndex) *
+                        thumbWidth,
+                    top: 0,
+                    bottom: 0,
+                    width: thumbWidth,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: colors.thumb,
+                        borderRadius: BorderRadius.circular(CloudPocketTheme.radiusSegmentThumb),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.14),
+                            blurRadius: 7,
+                            offset: Offset(0, 2),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        ],
                       ),
                     ),
-                  );
-                }),
-              ),
-            ],
+                  ),
+                // Buttons row
+                Row(
+                  children: List.generate(widget.values.length, (index) {
+                    return Expanded(
+                      child: GestureDetector(
+                        key: widget.segmentKeys?[widget.values[index]],
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => widget.onValueChanged(widget.values[index]),
+                        child: Center(
+                          child: Text(
+                            widget.labels[index],
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: colors.label,
+                              fontFamilyFallback: CloudPocketTheme.fontFallbacks,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+            ),
           );
         },
       ),

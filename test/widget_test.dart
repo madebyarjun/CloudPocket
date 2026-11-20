@@ -162,6 +162,31 @@ void main() {
     expect(find.byIcon(Icons.swap_vert_rounded), findsWidgets);
   });
 
+  testWidgets('Mode and timer swipes commit only the released option', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: CloudPocketApp()));
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(tester.element(find.byType(CloudPocketApp)));
+    final mode = await tester.startGesture(tester.getCenter(find.text('Send Files')));
+    await mode.moveTo(tester.getCenter(find.text('Receive Mode')));
+    await tester.pump();
+    expect(container.read(sessionProvider).isReceiveMode, isFalse);
+    await mode.moveTo(tester.getCenter(find.text('Room')));
+    await mode.up();
+    await tester.pumpAndSettle();
+    expect(find.text('Create Room'), findsOneWidget);
+
+    final originalDuration = container.read(sessionProvider).expiryDuration;
+    final timer = await tester.startGesture(tester.getCenter(find.text('15 min')));
+    await timer.moveTo(tester.getCenter(find.text('2 hr')));
+    await timer.cancel();
+    await tester.pumpAndSettle();
+    expect(container.read(sessionProvider).expiryDuration, originalDuration);
+    await tester.dragFrom(tester.getCenter(find.text('15 min')),
+        tester.getCenter(find.text('30 min')) - tester.getCenter(find.text('15 min')));
+    await tester.pumpAndSettle();
+    expect(container.read(sessionProvider).expiryDuration, ExpiryDuration.min30);
+  });
+
   testWidgets('Tapping Receive Mode segmented button switches frontend to Receive Mode', (WidgetTester tester) async {
     await tester.pumpWidget(
       const ProviderScope(
