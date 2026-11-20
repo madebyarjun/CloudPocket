@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:cloud_pocket/ui/theme.dart';
 
 const cpMotionCurve = Cubic(0.32, 0.72, 0.0, 1.0);
@@ -13,7 +13,7 @@ class CpSheet {
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.4),
+      barrierColor: Colors.black.withValues(alpha: 0.4),
       builder: (ctx) {
         final colors = Theme.of(ctx).extension<CloudPocketColors>() ?? CloudPocketColors.light;
         final viewInsets = MediaQuery.of(ctx).viewInsets;
@@ -24,7 +24,7 @@ class CpSheet {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 20,
                 offset: const Offset(0, -4),
               ),
@@ -316,7 +316,7 @@ class CpFieldGroup extends StatelessWidget {
                 hintText: item.hint,
                 hintStyle: TextStyle(
                   fontSize: 15,
-                  color: colors.label2.withOpacity(0.8),
+                  color: colors.label2.withValues(alpha: 0.8),
                   fontFamilyFallback: CloudPocketTheme.fontFallbacks,
                 ),
                 border: InputBorder.none,
@@ -387,7 +387,7 @@ class _CpButtonState extends State<CpButton> {
           height: 52,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: enabled ? bg : bg.withOpacity(widget.isSecondary ? 0.5 : 0.35),
+            color: enabled ? bg : bg.withValues(alpha: widget.isSecondary ? 0.5 : 0.35),
             borderRadius: BorderRadius.circular(17),
           ),
           alignment: Alignment.center,
@@ -409,7 +409,7 @@ class _CpButtonState extends State<CpButton> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: enabled ? fg : fg.withOpacity(0.5),
+                      color: enabled ? fg : fg.withValues(alpha: 0.5),
                       fontFamilyFallback: CloudPocketTheme.fontFallbacks,
                     ),
                   ),

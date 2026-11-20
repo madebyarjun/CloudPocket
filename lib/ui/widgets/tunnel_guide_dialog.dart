@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_pocket/ui/theme.dart';
 import 'package:cloud_pocket/ui/widgets/apple_widgets.dart';
@@ -372,10 +372,10 @@ class _InfoBanner extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
-      color: color.withOpacity(0.08),
+      color: color.withValues(alpha: 0.08),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: color.withOpacity(0.25)),
+        side: BorderSide(color: color.withValues(alpha: 0.25)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -419,7 +419,7 @@ class _CodeChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
@@ -447,7 +447,7 @@ class _CopyableCode extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
@@ -515,7 +515,7 @@ class _ModeDetailCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: tagColor.withOpacity(0.15),
+                    color: tagColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(

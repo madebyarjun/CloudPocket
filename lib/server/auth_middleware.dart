@@ -30,7 +30,9 @@ class SessionEntry {
     if (config.requirePassword && !isPasswordVerified) return false;
     if (config.roomConfig?.requirePin == true && !isPasswordVerified) return false;
     if (config.isDisposableRoom && config.roomConfig != null &&
-        (config.roomConfig!.inviteToken.isNotEmpty || config.roomConfig!.requirePin) && !isRoomVerified) return false;
+        (config.roomConfig!.inviteToken.isNotEmpty || config.roomConfig!.requirePin) && !isRoomVerified) {
+      return false;
+    }
     if (config.isDisposableRoom && config.roomConfig?.isTokenRevoked == true) return false;
     return true;
   }

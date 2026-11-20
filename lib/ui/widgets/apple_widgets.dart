@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:cloud_pocket/ui/theme.dart';
 
 const appleCurve = Cubic(0.32, 0.72, 0.0, 1.0);
@@ -432,7 +432,7 @@ class _AppleButtonState extends State<AppleButton> {
       curve: appleCurve,
       child: Container(
         decoration: BoxDecoration(
-          color: widget.onPressed != null ? bg : bg.withOpacity(0.4),
+          color: widget.onPressed != null ? bg : bg.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(widget.isSmall ? 14 : CloudPocketTheme.radiusButton),
         ),
         padding: widget.isSmall
@@ -452,7 +452,7 @@ class _AppleButtonState extends State<AppleButton> {
               style: TextStyle(
                 fontSize: widget.isSmall ? 15 : 17,
                 fontWeight: FontWeight.w600,
-                color: widget.onPressed != null ? fg : fg.withOpacity(0.5),
+                color: widget.onPressed != null ? fg : fg.withValues(alpha: 0.5),
                 fontFamilyFallback: CloudPocketTheme.fontFallbacks,
               ),
               maxLines: 1,
@@ -531,7 +531,7 @@ class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateM
             color: dotColor,
             boxShadow: [
               BoxShadow(
-                color: dotColor.withOpacity(opacity * 0.55),
+                color: dotColor.withValues(alpha: opacity * 0.55),
                 blurRadius: 0,
                 spreadRadius: spread,
               ),
@@ -561,7 +561,7 @@ class ApplePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
-    final bg = backgroundColor ?? colors.green.withOpacity(0.16);
+    final bg = backgroundColor ?? colors.green.withValues(alpha: 0.16);
     final fg = textColor ?? colors.green;
 
     return Container(

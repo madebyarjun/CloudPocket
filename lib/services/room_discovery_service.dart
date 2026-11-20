@@ -92,7 +92,9 @@ class RoomDiscoveryService {
               }
               final expiresAt = parsedMsg['expiresAt'];
               if (parsedMsg['requirePin'] != true || expiresAt is! int ||
-                  DateTime.now().millisecondsSinceEpoch >= expiresAt) return null;
+                  DateTime.now().millisecondsSinceEpoch >= expiresAt) {
+                return null;
+              }
               final targetUrl = parsedMsg['url'] as String?;
               if (targetUrl != null && targetUrl.isNotEmpty) {
                 return DiscoveredRoom(

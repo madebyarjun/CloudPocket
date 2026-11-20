@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 class CloudflaredBinaryManager {
-  static const String _version = '2026.8.3'; // Pin or default release
+  static const String _version = '2026.11.1'; // Pin or default release
   static const MethodChannel _nativeChannel = MethodChannel('com.cloudpocket.app/wifi_lock');
 
   /// Returns the path to an executable `cloudflared` binary.

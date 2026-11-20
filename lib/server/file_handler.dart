@@ -379,8 +379,8 @@ class FileHandler {
           'content-length': contentLength.toString(),
           'content-range': 'bytes $start-$end/$fileSize',
           'accept-ranges': 'bytes',
-          if (etag != null) 'etag': etag,
-          if (lastModified != null) 'last-modified': lastModified,
+          'etag': ?etag,
+          'last-modified': ?lastModified,
           'content-disposition': '$dispositionType; filename="$filename"',
         },
       );

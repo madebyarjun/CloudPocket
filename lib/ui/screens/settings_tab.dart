@@ -1,6 +1,6 @@
 import 'package:cloud_pocket/ui/screens/onboarding_screen.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_pocket/providers/server_provider.dart';
 import 'package:cloud_pocket/providers/settings_provider.dart';
@@ -135,7 +135,9 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
 
   void _pickUploadDirectory(BuildContext context) async {
     try {
-      final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      // The streaming server requires a filesystem path for directory traversal.
+      // ignore: deprecated_member_use
+      final selectedDirectory = await FilePicker.getDirectoryPath();
       if (selectedDirectory != null) {
         await ref.read(settingsProvider.notifier).setCustomUploadDirectory(selectedDirectory);
         if (context.mounted) {
@@ -228,7 +230,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> with WidgetsBindingOb
                     subtitle: uploadDirAsync.when(
                       data: (path) => path,
                       loading: () => 'Loading folder…',
-                      error: (_, __) => 'Folder unavailable. Tap to choose a folder.',
+                      error: (_, _) => 'Folder unavailable. Tap to choose a folder.',
                     ),
                     trailing: Icon(Icons.folder_open_rounded, size: 18, color: colors.blue),
                     onTap: () => _pickUploadDirectory(context),

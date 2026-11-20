@@ -19,7 +19,7 @@ Before the next release, exercise these paths on physical hardware and record th
 
 ## Google Play migration
 
-This branch targets API 34. Current [Google Play target requirements](https://developer.android.com/google/play/requirements/target-sdk) require API 36 for new apps/updates. Migrate Flutter, Android Gradle tooling, SDKs and affected plugins in a dedicated compatibility change; changing the target number alone is insufficient.
+The maintenance branch targets API 36. The published v1.0.3 APKs target API 34. [Google Play target requirements](https://developer.android.com/google/play/requirements/target-sdk)
 
 Verify [16 KB page-size compatibility](https://developer.android.com/guide/practices/page-sizes) for Flutter, every native plugin and bundled cloudflared, including installation from a generated bundle. Do not infer compatibility from emulator startup.
 

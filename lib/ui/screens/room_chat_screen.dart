@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
@@ -403,12 +403,11 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
 
   Future<void> _pickAndUploadMedia() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final result = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: kAllowedRoomMediaExtensions,
       );
-      if (result == null || result.files.isEmpty) return;
-      final path = result.files.single.path;
+      final path = result?.path;
       if (path == null) return;
 
       final file = File(path);
@@ -566,7 +565,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
             Expanded(
               child: CustomPaint(
                   painter: _RoomWatermark(
-                      _nickname, colors.label.withOpacity(0.035)),
+                      _nickname, colors.label.withValues(alpha: 0.035)),
                   child: ListView.builder(
                     controller: _scrollController,
                     padding: const EdgeInsets.symmetric(
@@ -622,8 +621,7 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
                                   ? null
                                   : '$_baseHttpUrl${msg.fileDownloadPath}',
                               headers: {
-                                if (_attachmentKey != null)
-                                  'X-Room-View-Key': _attachmentKey!,
+                                'X-Room-View-Key': ?_attachmentKey,
                                 if (_activePin?.isNotEmpty == true)
                                   'X-Room-Pin': _activePin!,
                                 if (_activeToken?.isNotEmpty == true)

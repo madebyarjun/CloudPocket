@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_pocket/models/share_session.dart';
@@ -48,8 +48,8 @@ class _FluidShimmerState extends State<_FluidShimmer> with SingleTickerProviderS
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final baseColor = cs.surfaceVariant.withOpacity(0.35);
-    final highlightColor = cs.surfaceVariant.withOpacity(0.85);
+    final baseColor = cs.surfaceContainerHighest.withValues(alpha: 0.35);
+    final highlightColor = cs.surfaceContainerHighest.withValues(alpha: 0.85);
 
     return AnimatedBuilder(
       animation: _controller,
@@ -133,9 +133,9 @@ class _ThumbnailLoadingIndicatorState extends ConsumerState<ThumbnailLoadingIndi
           margin: const EdgeInsets.symmetric(vertical: 6),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: extColors.success.withOpacity(0.12),
+            color: extColors.success.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: extColors.success.withOpacity(0.3)),
+            border: Border.all(color: extColors.success.withValues(alpha: 0.3)),
           ),
           child: Row(
             children: [
@@ -165,10 +165,10 @@ class _ThumbnailLoadingIndicatorState extends ConsumerState<ThumbnailLoadingIndi
         vertical: widget.compact ? 10 : 12,
       ),
       decoration: BoxDecoration(
-        color: cs.surfaceVariant.withOpacity(0.35),
+        color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: cs.outlineVariant.withOpacity(0.6),
+          color: cs.outlineVariant.withValues(alpha: 0.6),
           width: 1,
         ),
       ),
@@ -215,7 +215,7 @@ class _ThumbnailLoadingIndicatorState extends ConsumerState<ThumbnailLoadingIndi
                   height: 4,
                   child: LinearProgressIndicator(
                     value: animatedValue > 0 ? animatedValue : null,
-                    backgroundColor: cs.surfaceVariant.withOpacity(0.5),
+                    backgroundColor: cs.surfaceContainerHighest.withValues(alpha: 0.5),
                     valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
                   ),
                 ),
@@ -230,14 +230,14 @@ class _ThumbnailLoadingIndicatorState extends ConsumerState<ThumbnailLoadingIndi
               Icon(
                 Icons.bolt_rounded,
                 size: 12,
-                color: cs.onSurfaceVariant.withOpacity(0.75),
+                color: cs.onSurfaceVariant.withValues(alpha: 0.75),
               ),
               const SizedBox(width: 4),
               Text(
                 'Ready to share anytime',
                 style: TextStyle(
                   fontSize: 11,
-                  color: cs.onSurfaceVariant.withOpacity(0.8),
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.8),
                 ),
               ),
             ],
@@ -275,7 +275,7 @@ class ItemThumbnailWidget extends ConsumerWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: color.withOpacity(0.15),
+          color: color.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(icon, color: color, size: size * 0.54),
@@ -302,7 +302,7 @@ class ItemThumbnailWidget extends ConsumerWidget {
                 height: size,
                 fit: BoxFit.cover,
                 cacheWidth: (size * 2.5).toInt(),
-                errorBuilder: (_, __, ___) => _buildFallbackIcon(colorScheme),
+                errorBuilder: (_, _, _) => _buildFallbackIcon(colorScheme),
               ),
             )
           : _FluidShimmer(
@@ -313,7 +313,7 @@ class ItemThumbnailWidget extends ConsumerWidget {
               child: Center(
                 child: Icon(
                   Icons.photo_outlined,
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.25),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.25),
                   size: size * 0.46,
                 ),
               ),
@@ -326,7 +326,7 @@ class ItemThumbnailWidget extends ConsumerWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: colorScheme.primary.withOpacity(0.15),
+        color: colorScheme.primary.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(
@@ -412,7 +412,7 @@ class SelectedThumbnailsStrip extends ConsumerWidget {
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: maxPreview.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final item = maxPreview[index];
                     return ItemThumbnailWidget(item: item, size: 52);
@@ -425,9 +425,9 @@ class SelectedThumbnailsStrip extends ConsumerWidget {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: cs.surfaceVariant.withOpacity(0.8),
+                    color: cs.surfaceContainerHighest.withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: cs.outlineVariant.withOpacity(0.5)),
+                    border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.5)),
                   ),
                   child: Center(
                     child: Text(

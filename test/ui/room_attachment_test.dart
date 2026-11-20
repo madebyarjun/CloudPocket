@@ -1,7 +1,7 @@
 import 'package:cloud_pocket/models/chat_message.dart';
 import 'package:cloud_pocket/ui/theme.dart';
 import 'package:cloud_pocket/ui/widgets/room_media_viewer.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

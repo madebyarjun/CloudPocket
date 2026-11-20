@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
@@ -125,7 +125,7 @@ class _FileSelectorScreenState extends ConsumerState<FileSelectorScreen> {
                             Icon(
                               Icons.folder_open_rounded,
                               size: 64,
-                              color: colors.label2.withOpacity(0.4),
+                              color: colors.label2.withValues(alpha: 0.4),
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -152,7 +152,7 @@ class _FileSelectorScreenState extends ConsumerState<FileSelectorScreen> {
                     : ListView.separated(
                         padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                         itemCount: filteredItems.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        separatorBuilder: (_, _) => const SizedBox(height: 10),
                         itemBuilder: (context, index) {
                           final item = filteredItems[index];
                           return _FileItemTile(
@@ -226,13 +226,13 @@ class _FileSelectorScreenState extends ConsumerState<FileSelectorScreen> {
   Future<void> _pickFiles() async {
     setState(() => _isLoading = true);
     try {
-      final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-      if (result != null && result.files.isNotEmpty) {
-        final newItems = result.files
+      final result = await FilePicker.pickFiles();
+      if (result.isNotEmpty) {
+        final newItems = result
             .where((f) => f.path != null)
             .map((f) {
               final file = File(f.path!);
-              final size = file.existsSync() ? file.lengthSync() : (f.size);
+              final size = file.existsSync() ? file.lengthSync() : (f.lengthSync() ?? 0);
               return SharedItem(
                 path: f.path!,
                 name: f.name,
@@ -292,7 +292,9 @@ class _FileSelectorScreenState extends ConsumerState<FileSelectorScreen> {
 
     setState(() => _isLoading = true);
     try {
-      final dirPath = await FilePicker.platform.getDirectoryPath();
+      // The streaming server requires a filesystem path for directory traversal.
+      // ignore: deprecated_member_use
+      final dirPath = await FilePicker.getDirectoryPath();
       if (dirPath != null) {
         final normalizedPath = p.normalize(dirPath);
         final dir = Directory(normalizedPath);

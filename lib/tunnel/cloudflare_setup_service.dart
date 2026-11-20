@@ -186,7 +186,7 @@ class CloudflareSetupService {
     }
   }
 
-  /// Creates or updates a DNS CNAME record pointing to <tunnelId>.cfargotunnel.com.
+  /// Creates or updates a DNS CNAME record pointing to `<tunnelId>`.cfargotunnel.com.
   Future<void> createDnsCnameRecord({
     required String apiToken,
     required String zoneId,

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
@@ -64,7 +64,9 @@ class _ForegroundRoomTapState extends ConsumerState<ForegroundRoomTap>
       if (await _channel
                   .invokeMethod<bool>(url == null ? 'canRead' : 'canHost') !=
               true ||
-          !current()) return;
+          !current()) {
+        return;
+      }
       final enabled = await _channel.invokeMethod<bool>('enabled');
       if (!current()) return;
       final nav = rootNavigatorKey.currentState;

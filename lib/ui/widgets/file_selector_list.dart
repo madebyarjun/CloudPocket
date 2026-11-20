@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
@@ -14,10 +14,10 @@ class FileSelectorList extends ConsumerWidget {
 
   Future<void> _pickFiles(BuildContext context, WidgetRef ref) async {
     try {
-      final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-      if (result != null && result.files.isNotEmpty) {
+      final result = await FilePicker.pickFiles();
+      if (result.isNotEmpty) {
         final newItems = <SharedItem>[];
-        for (final platformFile in result.files) {
+        for (final platformFile in result) {
           final path = platformFile.path;
           if (path != null) {
             final file = File(path);
@@ -45,7 +45,9 @@ class FileSelectorList extends ConsumerWidget {
 
   Future<void> _pickDirectory(BuildContext context, WidgetRef ref) async {
     try {
-      final dirPath = await FilePicker.platform.getDirectoryPath();
+      // The streaming server requires a filesystem path for directory traversal.
+      // ignore: deprecated_member_use
+      final dirPath = await FilePicker.getDirectoryPath();
       if (dirPath != null) {
         final dir = Directory(dirPath);
         if (await dir.exists()) {
@@ -178,13 +180,13 @@ class FileSelectorList extends ConsumerWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: session.items.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final item = session.items[index];
               return ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 leading: CircleAvatar(
-                  backgroundColor: _getIconColor(item, theme).withOpacity(0.15),
+                  backgroundColor: _getIconColor(item, theme).withValues(alpha: 0.15),
                   child: Icon(_getIcon(item), color: _getIconColor(item, theme), size: 22),
                 ),
                 title: Text(

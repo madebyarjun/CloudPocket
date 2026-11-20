@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -134,7 +134,7 @@ class _QrScannerSheetState extends State<QrScannerSheet> {
           MobileScanner(
             controller: _controller,
             onDetect: _onDetect,
-            errorBuilder: (context, error, child) {
+            errorBuilder: (context, error) {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
@@ -176,7 +176,7 @@ class _QrScannerSheetState extends State<QrScannerSheet> {
             child: IgnorePointer(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                 ),
               ),
             ),
@@ -192,7 +192,7 @@ class _QrScannerSheetState extends State<QrScannerSheet> {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF38BDF8).withOpacity(0.2),
+                    color: const Color(0xFF38BDF8).withValues(alpha: 0.2),
                     blurRadius: 16,
                     spreadRadius: 2,
                   ),
@@ -255,7 +255,7 @@ class _QrScannerSheetState extends State<QrScannerSheet> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFDC2626).withOpacity(0.92),
+                    color: const Color(0xFFDC2626).withValues(alpha: 0.92),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: const [
                       BoxShadow(color: Colors.black45, blurRadius: 10, offset: Offset(0, 4)),
@@ -339,7 +339,7 @@ class _QrScannerSheetState extends State<QrScannerSheet> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1C1C1E).withOpacity(0.85),
+                  color: const Color(0xFF1C1C1E).withValues(alpha: 0.85),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: Colors.white12),
                 ),

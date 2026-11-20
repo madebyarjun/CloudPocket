@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:cloud_pocket/services/app_logger.dart';
@@ -89,10 +89,10 @@ class _LogViewerDialogState extends State<LogViewerDialog> {
   Future<void> _exportAndShare() async {
     try {
       final file = await AppLogger().saveLogToFile();
-      await Share.shareXFiles(
-        [XFile(file.path)],
+      await SharePlus.instance.share(ShareParams(
+        files: [XFile(file.path)],
         text: 'CloudPocket Diagnostic Log Report',
-      );
+      ));
     } catch (e) {
       if (mounted) {
         AppleToast.show(context, 'Failed to export logs: $e');
@@ -139,7 +139,7 @@ class _LogViewerDialogState extends State<LogViewerDialog> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: (cpColors?.success ?? colorScheme.primary).withOpacity(0.15),
+                    color: (cpColors?.success ?? colorScheme.primary).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
@@ -31,10 +31,10 @@ class _ReceivedFilesTabState extends ConsumerState<ReceivedFilesTab> {
 
   Future<void> _shareFile(ReceivedFileItem item) async {
     try {
-      await Share.shareXFiles(
-        [XFile(item.path)],
+      await SharePlus.instance.share(ShareParams(
+        files: [XFile(item.path)],
         subject: item.name,
-      );
+      ));
     } catch (e) {
       if (mounted) {
         _showToast('Could not share file: $e');
@@ -102,7 +102,7 @@ class _ReceivedFilesTabState extends ConsumerState<ReceivedFilesTab> {
   Widget build(BuildContext context) {
     final receivedState = ref.watch(receivedFilesProvider);
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
-    final stateValue = receivedState.valueOrNull;
+    final stateValue = receivedState.value;
     final allFiles = stateValue?.files ?? const <ReceivedFileItem>[];
 
     final filteredFiles = allFiles.where((f) {

@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.4
+
+- Updated the Android toolchain to Flutter 3.50 and target API 36. Both ARM architectures still support Android 8.0 and later.
+- Updated the Android tunnel executable to cloudflared 2026.11.1 and migrated sharing, file picking, notifications and secure storage to the updated plugin APIs.
+- Fixed ink feedback in the sharing and room setup screens after the Material upgrade.
+
 ## v1.0.3
 
 - **Added** a six-step Home tour and an illustrated user guide in Settings.

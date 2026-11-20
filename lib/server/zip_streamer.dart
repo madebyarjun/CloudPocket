@@ -51,7 +51,7 @@ class StreamingZipArchive {
     return c ^ 0xffffffff;
   }
 
-  /// Streams a collection of files as a single ZIP archive into a Stream<List<int>>
+  /// Streams a collection of files as a single ZIP archive into a `Stream<List<int>>`
   static Stream<List<int>> streamFiles(
     List<File> files, {
     String? basePrefix,

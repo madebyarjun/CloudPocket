@@ -1,5 +1,4 @@
-import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_pocket/models/share_session.dart';
@@ -96,7 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObse
             color: colors.card,
             borderRadius: BorderRadius.circular(22),
             boxShadow: colors.shadow,
-            border: Border.all(color: colors.blue.withOpacity(0.3)),
+            border: Border.all(color: colors.blue.withValues(alpha: 0.3)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -137,11 +137,11 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
       tempFile = File('${tempDir.path}/cloudpocket_qr_${DateTime.now().millisecondsSinceEpoch}.png');
       await tempFile.writeAsBytes(bytes);
 
-      await Share.shareXFiles(
-        [XFile(tempFile.path)],
+      await SharePlus.instance.share(ShareParams(
+        files: [XFile(tempFile.path)],
         text: 'Connect to CloudPocket: $url',
         subject: 'CloudPocket Share Link',
-      );
+      ));
     } catch (_) {
       if (mounted) {
         AppleToast.show(context, 'Could not share QR code');
@@ -161,7 +161,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
     if (!mounted) return;
     await showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.92),
+      barrierColor: Colors.black.withValues(alpha: 0.92),
       builder: (ctx) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -263,7 +263,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
             animation: _slideAnimation,
             builder: (context, child) {
               return Container(
-                color: Colors.black.withOpacity(0.4 * _slideAnimation.value),
+                color: Colors.black.withValues(alpha: 0.4 * _slideAnimation.value),
               );
             },
           ),
@@ -379,7 +379,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                             decoration: BoxDecoration(
                               color: colors.card,
                               borderRadius: BorderRadius.circular(CloudPocketTheme.radiusCard),
-                              border: Border.all(color: colors.blue.withOpacity(0.3)),
+                              border: Border.all(color: colors.blue.withValues(alpha: 0.3)),
                               boxShadow: colors.shadow,
                             ),
                             child: Column(
@@ -423,7 +423,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                             decoration: BoxDecoration(
                               color: colors.card,
                               borderRadius: BorderRadius.circular(CloudPocketTheme.radiusCard),
-                              border: Border.all(color: colors.red.withOpacity(0.4)),
+                              border: Border.all(color: colors.red.withValues(alpha: 0.4)),
                               boxShadow: colors.shadow,
                             ),
                             child: Column(
@@ -520,7 +520,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                           ),
                         ),
 
-                        ExpansionTile(title: const Text('Connection details'), children: [
+                        Material(type: MaterialType.transparency, child: ExpansionTile(title: const Text('Connection details'), children: [
                         if (allIps.length > 1) ...[
                           const SizedBox(height: 12),
                           Text(
@@ -548,7 +548,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
-                                    color: isSelected ? colors.blue.withOpacity(0.15) : colors.card,
+                                    color: isSelected ? colors.blue.withValues(alpha: 0.15) : colors.card,
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
                                       color: isSelected ? colors.blue : colors.sep,
@@ -597,7 +597,7 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                         ),
                         const SizedBox(height: 16),
 
-                        ]),
+                        ])),
                         // Actions row (Copy, Share, Open)
                         Row(
                           children: [
@@ -635,11 +635,11 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
                                     ? () async {
                                         try {
                                           final opened = await ExternalLinkService.open(currentUrl);
-                                          if (!opened && mounted) {
+                                          if (!opened && context.mounted) {
                                             AppleToast.show(context, 'Could not open browser');
                                           }
                                         } catch (_) {
-                                          if (mounted) {
+                                          if (context.mounted) {
                                             AppleToast.show(context, 'Could not open browser');
                                           }
                                         }
@@ -800,10 +800,10 @@ class _SharingLiveViewState extends ConsumerState<SharingLiveView> with SingleTi
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: hasError
-              ? colors.red.withOpacity(0.15)
+              ? colors.red.withValues(alpha: 0.15)
               : (isSelected ? colors.blue : colors.fill),
           borderRadius: BorderRadius.circular(18),
-          border: hasError ? Border.all(color: colors.red.withOpacity(0.5)) : null,
+          border: hasError ? Border.all(color: colors.red.withValues(alpha: 0.5)) : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

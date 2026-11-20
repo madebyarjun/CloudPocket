@@ -262,7 +262,7 @@ class ServerEngine {
     final router = Router();
 
     // WebSocket endpoint for real-time transfer tracking
-    final wsHandler = webSocketHandler((WebSocketChannel webSocket) {
+    final wsHandler = webSocketHandler((WebSocketChannel webSocket, String? _) {
       _wsClients.add(webSocket);
       _broadcastCurrentStats();
       webSocket.stream.listen(
@@ -337,7 +337,7 @@ class ServerEngine {
     router.get('/room.css', (Request req) => _serveAsset('assets/web/room.css', 'text/css'));
 
     Future<Response> roomWsHandler(Request request) async {
-      return webSocketHandler((WebSocketChannel webSocket) {
+      return webSocketHandler((WebSocketChannel webSocket, String? _) {
       if (_disposableRoom != null) {
         _disposableRoom!.chatHub.handleWebSocket(
           webSocket,
@@ -856,7 +856,7 @@ class ServerEngine {
         .addMiddleware(_corsMiddleware())
         .addMiddleware(_trafficTrackerMiddleware())
         .addMiddleware(_authManager!.middleware)
-        .addHandler(router);
+        .addHandler(router.call);
 
     // Bind to all IPv4 interfaces on phone
     var bindPort = preferredPort;
@@ -949,7 +949,7 @@ class ServerEngine {
           return Response(403, body: 'Cross-origin requests are not allowed');
         }
         final corsHeaders = {
-          if (origin != null) 'Access-Control-Allow-Origin': origin,
+          'Access-Control-Allow-Origin': ?origin,
           'Vary': 'Origin',
           'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Filename, X-Subpath, X-Filesize, X-Nickname, X-Sender-Id, X-Secure-Client, X-Color, X-Room-Pin, X-Room-Token, Range, Authorization',

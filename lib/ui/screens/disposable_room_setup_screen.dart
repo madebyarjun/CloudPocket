@@ -1,5 +1,5 @@
 import 'package:cloud_pocket/ui/widgets/room_tap_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_pocket/models/server_state.dart';
@@ -407,10 +407,10 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
     final netInfo = ref.watch(networkStateProvider).value;
     final colors = Theme.of(context).extension<CloudPocketColors>() ?? CloudPocketColors.light;
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) return;
         ref.read(sessionProvider.notifier).setIsDisposableRoom(false);
-        return true;
       },
       child: Scaffold(
       backgroundColor: colors.bg,
@@ -525,7 +525,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                           labelText: 'Room Name',
                           labelStyle: TextStyle(color: colors.label2, fontSize: 13),
                           hintText: 'e.g. Project Chat, Secret Room',
-                          hintStyle: TextStyle(color: colors.label2.withOpacity(0.5), fontSize: 15),
+                          hintStyle: TextStyle(color: colors.label2.withValues(alpha: 0.5), fontSize: 15),
                         ),
                         onChanged: (val) {
                           ref.read(sessionProvider.notifier).setRoomName(val);
@@ -553,7 +553,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                       trailing: Text('›', style: TextStyle(fontSize: 22, color: colors.label2, fontWeight: FontWeight.w300)),
                       onTap: () => _showTunnelModeDialog(context),
                     ),
-                    ExpansionTile(title: const Text('Room options'), subtitle: Text('${session.expiryDuration.label} · ${session.requirePassword ? "PIN required" : "Invite access"}'), children: [
+                    Material(type: MaterialType.transparency, child: ExpansionTile(title: const Text('Room options'), subtitle: Text('${session.expiryDuration.label} · ${session.requirePassword ? "PIN required" : "Invite access"}'), children: [
                     // Self-Destruct Timer
                     AppleRow(
                       icon: AppleIconTile(
@@ -576,7 +576,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                       trailing: Text('›', style: TextStyle(fontSize: 22, color: colors.label2, fontWeight: FontWeight.w300)),
                       onTap: () => _showSecurityDialog(context),
                     ),
-                    ]),
+                    ])),
                   ],
                 ),
 
@@ -755,7 +755,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                   labelText: 'Room link or code',
                   labelStyle: TextStyle(color: colors.label2, fontSize: 13),
                   hintText: 'e.g. AB-4829 or https://...',
-                  hintStyle: TextStyle(color: colors.label2.withOpacity(0.5), fontSize: 15),
+                  hintStyle: TextStyle(color: colors.label2.withValues(alpha: 0.5), fontSize: 15),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.content_paste_rounded, size: 19, color: colors.blue),
                     tooltip: 'Paste from clipboard',
@@ -778,7 +778,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                   labelText: 'Room PIN (if required)',
                   labelStyle: TextStyle(color: colors.label2, fontSize: 13),
                   hintText: 'Enter secret room PIN',
-                  hintStyle: TextStyle(color: colors.label2.withOpacity(0.5), fontSize: 15),
+                  hintStyle: TextStyle(color: colors.label2.withValues(alpha: 0.5), fontSize: 15),
                   suffixIcon: IconButton(
                     icon: Icon(_obscureJoinPin ? Icons.visibility_off_rounded : Icons.visibility_rounded, size: 19, color: colors.label2),
                     onPressed: () => setState(() => _obscureJoinPin = !_obscureJoinPin),
@@ -797,7 +797,7 @@ class _DisposableRoomSetupScreenState extends ConsumerState<DisposableRoomSetupS
                   labelText: 'Your Nickname',
                   labelStyle: TextStyle(color: colors.label2, fontSize: 13),
                   hintText: 'Host or guest name',
-                  hintStyle: TextStyle(color: colors.label2.withOpacity(0.5), fontSize: 15),
+                  hintStyle: TextStyle(color: colors.label2.withValues(alpha: 0.5), fontSize: 15),
                 ),
               ),
             ),

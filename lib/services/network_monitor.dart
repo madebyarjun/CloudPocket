@@ -21,7 +21,7 @@ class NetworkInfoState {
 
 class NetworkMonitor {
   final Connectivity _connectivity = Connectivity();
-  StreamSubscription<ConnectivityResult>? _subscription;
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
   final _stateController = StreamController<NetworkInfoState>.broadcast();
 
   Stream<NetworkInfoState> get onNetworkChanged => _stateController.stream;

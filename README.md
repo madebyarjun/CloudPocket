@@ -31,11 +31,11 @@ This branch uses:
 
 | Requirement | Version / notes |
 | --- | --- |
-| Flutter | 3.13.9 stable |
-| Dart | 3.1.5; package constraint `>=3.1.5 <4.0.0` |
-| Android SDK | Compile/target 34; minimum 26 |
+| Flutter | 3.50.0 stable |
+| Dart | 3.14.0; package constraint `>=3.14.0 <4.0.0` |
+| Android SDK | Compile 37, target 36; minimum 26 |
 | Java | 17 for Android tooling |
-| Node.js | 18+ for browser unit tests |
+| Node.js | 24 LTS for browser unit tests |
 | Android release architecture | ARM64 (`arm64-v8a`) and ARMv7 (`armeabi-v7a`) |
 
 Install Git LFS and run `git lfs pull` after cloning to fetch both ARM tunnel executables. From the project root:
@@ -66,7 +66,7 @@ node --test test/web/client.test.cjs
 On Windows, the combined check script also validates JavaScript syntax:
 
 ```powershell
-./tool/check.ps1 -FlutterRoot <path-to-Flutter-3.13.9>
+./tool/check.ps1 -FlutterRoot <path-to-Flutter-3.50.0>
 ```
 
 Production signing requires private configuration in `android/key.properties`; never commit signing keys or credentials. See [testing](docs/TESTING.md) and [release gates](docs/RELEASE.md) for device checks and publishing requirements.

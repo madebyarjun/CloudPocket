@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
@@ -174,20 +174,20 @@ class RoomMediaBubble extends StatelessWidget {
                             File(localFilePath!),
                             fit: BoxFit.cover,
                             width: 240,
-                            errorBuilder: (_, __, ___) => _buildFallbackThumb(icon, accentColor),
+                            errorBuilder: (_, _, _) => _buildFallbackThumb(icon, accentColor),
                           )
                         : Image.network(
                             remoteUrl!,
                             headers: headers,
                             fit: BoxFit.cover,
                             width: 240,
-                            errorBuilder: (_, __, ___) => _buildFallbackThumb(icon, accentColor),
+                            errorBuilder: (_, _, _) => _buildFallbackThumb(icon, accentColor),
                           ),
                     Container(
                       margin: const EdgeInsets.all(6),
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.65),
+                        color: Colors.black.withValues(alpha: 0.65),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Row(
@@ -216,9 +216,9 @@ class RoomMediaBubble extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 250),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: colorScheme.surface.withOpacity(0.6),
+              color: colorScheme.surface.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: accentColor.withOpacity(0.35)),
+              border: Border.all(color: accentColor.withValues(alpha: 0.35)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -227,7 +227,7 @@ class RoomMediaBubble extends StatelessWidget {
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.15),
+                    color: accentColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(icon, color: accentColor, size: 22),
@@ -262,7 +262,7 @@ class RoomMediaBubble extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                   decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.16),
+                    color: accentColor.withValues(alpha: 0.16),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -286,7 +286,7 @@ class RoomMediaBubble extends StatelessWidget {
     return Container(
       width: 220,
       height: 110,
-      color: accentColor.withOpacity(0.12),
+      color: accentColor.withValues(alpha: 0.12),
       alignment: Alignment.center,
       child: Icon(icon, size: 36, color: accentColor),
     );
@@ -666,7 +666,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black.withOpacity(0.85),
+        backgroundColor: Colors.black.withValues(alpha: 0.85),
         foregroundColor: Colors.white,
         elevation: 0,
         titleSpacing: 0,
@@ -840,7 +840,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.75),
+                color: Colors.black.withValues(alpha: 0.75),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.white24),
               ),
@@ -903,9 +903,9 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
                   height: 96,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: cpColors.success.withOpacity(0.15),
+                    color: cpColors.success.withValues(alpha: 0.15),
                     border: Border.all(
-                      color: cpColors.success.withOpacity(_isPlaying ? 0.6 : 0.25),
+                      color: cpColors.success.withValues(alpha: _isPlaying ? 0.6 : 0.25),
                       width: 2,
                     ),
                   ),
@@ -954,7 +954,7 @@ class _RoomMediaViewerScreenState extends State<RoomMediaViewerScreen> {
             ),
             Container(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              color: Colors.black.withOpacity(0.85),
+              color: Colors.black.withValues(alpha: 0.85),
               child: _buildTransportControls(colorScheme.primary),
             ),
           ],

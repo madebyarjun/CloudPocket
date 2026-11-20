@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Apple-style UI tokens and semantic status colors via `Theme.of(context).extension<CloudPocketColors>()`.
 @immutable
@@ -224,7 +224,7 @@ class CloudPocketTheme {
       tertiary: cpColors.orange,
       surface: cpColors.bg,
       onSurface: cpColors.label,
-      surfaceVariant: cpColors.fill,
+      surfaceContainerHighest: cpColors.fill,
       onSurfaceVariant: cpColors.label2,
       outline: cpColors.sep,
       outlineVariant: cpColors.sep,
@@ -247,7 +247,7 @@ class CloudPocketTheme {
       tertiary: cpColors.orange,
       surface: cpColors.bg,
       onSurface: cpColors.label,
-      surfaceVariant: cpColors.fill,
+      surfaceContainerHighest: cpColors.fill,
       onSurfaceVariant: cpColors.label2,
       outline: cpColors.sep,
       outlineVariant: cpColors.sep,
@@ -338,7 +338,7 @@ class CloudPocketTheme {
           fontFamilyFallback: fontFallbacks,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         color: cpColors.card,
         surfaceTintColor: Colors.transparent,
@@ -416,7 +416,7 @@ class CloudPocketTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
         ),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: cpColors.card,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusGroup)),
@@ -427,16 +427,16 @@ class CloudPocketTheme {
         space: 1,
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
           return Colors.white;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return cpColors.green;
           }
           return cpColors.fill;
         }),
-        trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+        trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
       ),
       extensions: [cpColors],
     );

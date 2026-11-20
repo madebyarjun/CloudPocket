@@ -7,12 +7,15 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.9'
+          flutter-version: '3.50.0'
           channel: stable
           cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test

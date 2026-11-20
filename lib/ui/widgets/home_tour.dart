@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Highlights the actual control after layout, including after a scroll or resize.
 class HomeTour extends StatefulWidget {
@@ -172,7 +172,7 @@ class _Spotlight extends CustomPainter {
       ..fillType = PathFillType.evenOdd
       ..addRect(Offset.zero & size)
       ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(10)));
-    canvas.drawPath(mask, Paint()..color = Colors.black.withOpacity(.68));
+    canvas.drawPath(mask, Paint()..color = Colors.black.withValues(alpha: .68));
     final y = down ? rect.bottom : rect.top;
     final base = y + (down ? 11 : -11);
     canvas.drawPath(

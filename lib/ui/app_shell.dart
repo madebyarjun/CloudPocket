@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/legacy.dart' show StateProvider;
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_pocket/providers/settings_provider.dart';
@@ -160,17 +161,15 @@ class _AppShellState extends ConsumerState<AppShell> with TickerProviderStateMix
         _permissionsFinished && _foreground && currentIndex == 0 &&
         ModalRoute.of(context)?.isCurrent == true && !ref.watch(serverProvider).isRunning;
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: !showTour && currentIndex == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
         if (showTour) {
           _closeTour();
-          return false;
-        }
-        if (currentIndex != 0) {
+        } else if (currentIndex != 0) {
           _handleNavigationTap(0);
-          return false;
         }
-        return true;
       },
       child: Stack(fit: StackFit.expand, children: [
         ExcludeSemantics(excluding: showTour, child: Scaffold(

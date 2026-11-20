@@ -1,7 +1,7 @@
 import 'package:cloud_pocket/ui/widgets/home_tour.dart';
 import 'package:cloud_pocket/providers/session_provider.dart';
 import 'package:cloud_pocket/models/share_session.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_pocket/ui/widgets/smooth_curved_nav_bar.dart';
@@ -29,7 +29,7 @@ void main() {
       await tester.pumpWidget(MaterialApp(
         theme: ThemeData(brightness: brightness),
         home: Builder(builder: (context) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 2.5),
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(2.5)),
           child: Stack(fit: StackFit.expand, children: [
             Align(alignment: Alignment.topRight, child: SizedBox(key: key, width: 42, height: 48)),
             HomeTour(step: 5, target: key, onShown: () {}, onNext: () => dismissed = true, onSkip: () {}),

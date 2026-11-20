@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
@@ -18,19 +17,10 @@ class CloudPocketForegroundService {
         channelDescription: 'Maintains personal file server in the background.',
         channelImportance: NotificationChannelImportance.LOW,
         priority: NotificationPriority.LOW,
-        buttons: [
-          const NotificationButton(id: 'stop_button', text: 'Stop'),
-        ],
-        iconData: const NotificationIconData(
-          resType: ResourceType.mipmap,
-          resPrefix: ResourcePrefix.ic,
-          name: 'launcher',
-        ),
       ),
       iosNotificationOptions: const IOSNotificationOptions(),
-      foregroundTaskOptions: const ForegroundTaskOptions(
-        interval: 5000,
-        isOnceEvent: false,
+      foregroundTaskOptions: ForegroundTaskOptions(
+        eventAction: ForegroundTaskEventAction.repeat(5000),
         autoRunOnBoot: false,
         allowWakeLock: true,
         allowWifiLock: true,
@@ -83,6 +73,7 @@ class CloudPocketForegroundService {
     await FlutterForegroundTask.startService(
       notificationTitle: title,
       notificationText: text,
+      notificationButtons: const [NotificationButton(id: 'stop_button', text: 'Stop')],
       callback: startCallback,
     );
   }
@@ -139,10 +130,10 @@ void startCallback() {
 
 class CloudPocketTaskHandler extends TaskHandler {
   @override
-  Future<void> onStart(DateTime timestamp, SendPort? sendPort) async {}
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {}
 
   @override
-  Future<void> onRepeatEvent(DateTime timestamp, SendPort? sendPort) async {}
+  void onRepeatEvent(DateTime timestamp) {}
 
   @override
   void onNotificationButtonPressed(String id) {
@@ -152,5 +143,5 @@ class CloudPocketTaskHandler extends TaskHandler {
   }
 
   @override
-  Future<void> onDestroy(DateTime timestamp, SendPort? sendPort) async {}
+  Future<void> onDestroy(DateTime timestamp, bool isTimeout) async {}
 }

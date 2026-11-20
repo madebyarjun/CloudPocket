@@ -316,7 +316,7 @@ class MainActivity: FlutterActivity() {
                 }
                 "isServiceRunning" -> {
                     try {
-                        val running = com.pravera.flutter_foreground_task.service.ForegroundService.isRunningService
+                        val running = com.pravera.flutter_foreground_task.service.ForegroundService.isRunningServiceState.value
                         result.success(running)
                     } catch (_: Exception) {
                         result.success(false)
@@ -904,7 +904,7 @@ class MainActivity: FlutterActivity() {
     override fun onDestroy() {
         releaseRoomMedia()
         try {
-            if (!com.pravera.flutter_foreground_task.service.ForegroundService.isRunningService) {
+            if (!com.pravera.flutter_foreground_task.service.ForegroundService.isRunningServiceState.value) {
                 if (wifiLock?.isHeld == true) {
                     wifiLock?.release()
                 }

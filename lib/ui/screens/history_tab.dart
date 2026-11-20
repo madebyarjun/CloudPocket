@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_pocket/models/server_stats.dart';
 import 'package:cloud_pocket/models/share_history.dart';
@@ -47,7 +47,7 @@ class HistoryTab extends ConsumerWidget {
                   Icon(
                     Icons.history_rounded,
                     size: 64,
-                    color: colors.label2.withOpacity(0.4),
+                    color: colors.label2.withValues(alpha: 0.4),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -63,7 +63,7 @@ class HistoryTab extends ConsumerWidget {
                   Text(
                     'Completed sharing sessions will be saved here',
                     style: TextStyle(
-                      color: colors.label2.withOpacity(0.7),
+                      color: colors.label2.withValues(alpha: 0.7),
                       fontSize: 13,
                       fontFamilyFallback: CloudPocketTheme.fontFallbacks,
                     ),
@@ -74,7 +74,7 @@ class HistoryTab extends ConsumerWidget {
           : ListView.separated(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
               itemCount: history.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final record = history[index];
                 return Dismissible(
@@ -84,7 +84,7 @@ class HistoryTab extends ConsumerWidget {
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 20),
                     decoration: BoxDecoration(
-                      color: colors.red.withOpacity(0.15),
+                      color: colors.red.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Icon(Icons.delete_outline_rounded, color: colors.red),
@@ -153,7 +153,7 @@ class _HistoryCard extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: colors.blue.withOpacity(0.12),
+                  color: colors.blue.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -194,7 +194,7 @@ class _HistoryCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                 decoration: BoxDecoration(
-                  color: isProtected ? colors.orange.withOpacity(0.14) : colors.fill,
+                  color: isProtected ? colors.orange.withValues(alpha: 0.14) : colors.fill,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(

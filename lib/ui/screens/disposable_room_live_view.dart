@@ -1,7 +1,6 @@
 import 'package:cloud_pocket/ui/widgets/room_tap_button.dart';
 import 'dart:async';
-import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
@@ -122,7 +121,7 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
                 if (!context.mounted) return;
                 await showDialog(
                   context: context,
-                  barrierColor: Colors.black.withOpacity(0.92),
+                  barrierColor: Colors.black.withValues(alpha: 0.92),
                   builder: (diagCtx) => Dialog(
                     backgroundColor: Colors.transparent,
                     insetPadding: const EdgeInsets.all(20),
@@ -200,10 +199,10 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
             CpButton(
               text: 'Share invite link',
               onPressed: () {
-                Share.share(
-                  'Connect to CloudPocket Room:\n$inviteUrl',
+                SharePlus.instance.share(ShareParams(
+                    text: 'Connect to CloudPocket Room:\n$inviteUrl',
                   subject: 'CloudPocket Ephemeral Room Invite',
-                );
+                ));
               },
             ),
             RoomTapButton(invite: inPersonQrUrl),
@@ -213,10 +212,10 @@ class _DisposableRoomLiveViewState extends ConsumerState<DisposableRoomLiveView>
                 text: 'Share PIN separately',
                 isSecondary: true,
                 onPressed: () {
-                  Share.share(
-                    'CloudPocket Room PIN: $rawPin\n(Send the PIN in a different message)',
+                  SharePlus.instance.share(ShareParams(
+                    text: 'CloudPocket Room PIN: $rawPin\n(Send the PIN in a different message)',
                     subject: 'CloudPocket Room PIN',
-                  );
+                  ));
                 },
               ),
               const SizedBox(height: 4),

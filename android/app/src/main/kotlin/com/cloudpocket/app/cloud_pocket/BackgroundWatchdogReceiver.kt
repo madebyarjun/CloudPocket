@@ -91,7 +91,7 @@ class BackgroundWatchdogReceiver : BroadcastReceiver() {
 
         // Reschedule foreground service if terminated while Keep Running is enabled
         try {
-            if (!com.pravera.flutter_foreground_task.service.ForegroundService.isRunningService) {
+            if (!com.pravera.flutter_foreground_task.service.ForegroundService.isRunningServiceState.value) {
                 Log.i("CloudPocketWatchdog", "Watchdog triggered on action $action; service will be maintained by foreground task manager")
             }
         } catch (_: Exception) {}
